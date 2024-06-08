@@ -12,6 +12,8 @@ const config = parse(DB_URL);
 const sequelize =
   process.env.NODE_ENV === "production"
     ? new Sequelize({
+        dialectModule: pg,
+        dialect: "postgres",
         protocol: "postgres",
         host: config.host,
         port: config.port,
@@ -22,6 +24,7 @@ const sequelize =
           max: 3,
           min: 1,
           idle: 10000,
+          acquire: 30000, // The maximum time, in milliseconds, that pool will try to get connection before throwing error
         },
         dialectOptions: {
           ssl: {
