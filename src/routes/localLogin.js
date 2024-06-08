@@ -10,7 +10,7 @@ const {
 } = process.env;
 const crypto = require("crypto");
 const router = Router();
-const { Student, Teacher, Admin } = require("../dbe");
+const { Student, Teacher, Admin } = require("../db");
 
 router.post("/", async (req, res, next) => {
   const { email, password } = req.body;
