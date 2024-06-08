@@ -2,7 +2,7 @@ require("dotenv").config();
 const { Sequelize } = require("sequelize");
 const fs = require("fs");
 const path = require("path");
-const { DB_URL } = process.env;
+const { DB_URL, DB_NAME, DB_USER, DB_PASSWORD} = process.env;
 const { DataTypes } = require("sequelize");
 const pg = require("pg");
 const parse = require("pg-connection-string").parse;
@@ -12,13 +12,12 @@ const config = parse(DB_URL);
 const sequelize =
   process.env.NODE_ENV === "production"
     ? new Sequelize({
-        database: DB_NAME,
-        dialect: "postgres",
-        dialectModule: pg,
-        host: DB_HOST,
-        port: 5432,
-        username: DB_USER,
-        password: DB_PASSWORD,
+        protocol: "postgres",
+        host: config.host,
+        port: config.port,
+        database: config.database,
+        username: config.user,
+        password: config.password,
         pool: {
           max: 3,
           min: 1,
