@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const validateCourse = require("../middlewares/validateCourse");
 const router = Router();
 const {
   getCourses,
@@ -15,11 +16,11 @@ const {
   updateCourse,
 } = require("./controller/courses/update.course.controller.js");
 
-router.post("/create", postCourses); //create a course
+router.post("/create", validateCourse, postCourses); //create a course
 router.get("/", getCourses); //trae todos los cursos,si tiene query filtra esos cursos
 router.get("/detail/:id", getCourseDetail); //trae todos los cursos,si tiene query filtra esos cursos
 router.delete("/delete/:id", deleteCourse);
-router.put("/update/:id", updateCourse);
+router.put("/update/:id",validateCourse, updateCourse);
 router.get("/teacher/:teacherId", getCoursesTeacher);
 
 module.exports = router;
