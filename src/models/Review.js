@@ -13,10 +13,16 @@ module.exports = (sequelize) => {
         allowNull: false,
       },
       score: {
-        type: DataTypes.ENUM("1", "2", "3", "4", "5"),
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          isIn: {
+            args: [[1, 2, 3, 4, 5]],
+            msg: "Score must be 1, 2, 3, 4 or 5",
+          },
+        },
         // type: DataTypes.INTEGER,
         // defaultValue: "0",
-        allowNull: false,
       },
       flag: {
         type: DataTypes.BOOLEAN,
