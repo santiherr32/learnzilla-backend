@@ -2,7 +2,7 @@ require("dotenv").config();
 const { Sequelize } = require("sequelize");
 const fs = require("fs");
 const path = require("path");
-const { DB_URL, DB_NAME, DB_USER, DB_PASSWORD} = process.env;
+const { DB_URL, DB_NAME, DB_USER, DB_PASSWORD } = process.env;
 const { DataTypes } = require("sequelize");
 const pg = require("pg");
 const parse = require("pg-connection-string").parse;
@@ -35,6 +35,10 @@ const sequelize =
           keepAlive: true,
         },
         ssl: true,
+        define: {
+          freezeTableName: true, // Respeta los nombres exactos de las tablas
+          underscored: false, // Usa camelCase en lugar de snake_case
+        },
       })
     : new Sequelize(
         //`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}`,
@@ -61,6 +65,10 @@ const sequelize =
             },
           },
           ssl: true,
+          define: {
+            freezeTableName: true, // Respeta los nombres exactos de las tablas
+            underscored: false, // Usa camelCase en lugar de snake_case
+          },
           logging: (msg) => console.log(msg), // set to console.log to see the raw SQL queries
           native: false, // lets Sequelize know we can use pg-native for ~30% more speed
         }
@@ -112,8 +120,18 @@ const {
 Student.belongsToMany(Course, { through: "Student_Course" });
 Course.belongsToMany(Student, { through: "Student_Course" });
 //*Relación entre Categories y Courses
-Course.belongsToMany(Category, { through: "Course_Category" });
-Category.belongsToMany(Course, { through: "Course_Category" });
+Course.belongsToMany(Category, {
+  through: "Course_Category",
+  as: "Categories",
+  attributes: [],
+  timestamps: false,
+});
+Category.belongsToMany(Course, {
+  through: "Course_Category",
+  as: "Courses",
+  attributes: [],
+  timestamps: false, // Evita incluir createdAt y updatedAt automáticamente
+});
 //Relación entre historial y estudiantes
 // Student.belongsToMany(Records, { through: "Student_Records" });
 // Records.belongsToMany(Student, { through: "Student_Records" });
@@ -128,7 +146,7 @@ Teacher.hasMany(Course, {
     name: "FKteacherID",
   },
 });
-Course.belongsTo(Teacher);
+Course.belongsTo(Teacher, { foreignKey: "FKteacherID", as: "Teacher" });
 
 //?Relación entre Courses y Videos
 Course.hasMany(Video, {
@@ -162,8 +180,9 @@ Course.hasMany(Review, {
     allowNull: false,
     name: "FKcourseID",
   },
+  as: "Reviews",
 });
-Review.belongsTo(Course);
+Review.belongsTo(Course, { foreignKey: "FKcourseID" });
 
 // //? Relación entre Estudiante, y Curso
 // Student.hasMany(Order, {
