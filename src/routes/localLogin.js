@@ -16,9 +16,7 @@ router.post("/", async (req, res, next) => {
   const { email, password } = req.body;
 
   if (email === EMAIL_ADMIN && password === PASSWORD_ADMIN) {
-    return res
-      .status(200)
-      .send({ authorization: true, role: "admin", id: 0001 });
+    return res.status(200).send({ authorization: true, role: "admin", id: 1 });
   }
 
   try {
@@ -59,7 +57,7 @@ router.post("/", async (req, res, next) => {
             .send({ authorization: true, role: role, id: DbUser.id });
         }
         return res.status(404).send({ authorization: false });
-      }
+      },
     );
   } catch (error) {
     console.error(error);

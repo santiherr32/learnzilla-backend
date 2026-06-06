@@ -18,7 +18,7 @@ const getInfoStudent = async (id) => {
       ],
     });
     if (!student) {
-      return res.status(404).send({ message: "Estudiante no encontrado" });
+      return null;
     }
     let arrayCoursesId = [];
     for (const course of student.courses) {
