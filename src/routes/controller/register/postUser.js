@@ -12,6 +12,29 @@ const {
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 
+const sendConfirmationEmail = async (email, name) => {
+  let Transport = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true, // true for 465, false for other ports
+    auth: {
+      user: EMAIL_USER,
+      pass: PASSWORD_USER,
+    },
+  });
+  await Transport.sendMail({
+    from: "<confirmpassword@learnzilla.com>",
+    to: email,
+    subject: "Confirmar cuenta",
+    html: `
+                <h1>Hola ${name}</h1>
+                <h2>Entra al siguiente link para confirmar tu cuenta <a href="https://learnzilla-app.vercel.app/confirmUser" target="_blank" rel="noreferrer">Confirmar mi cuenta</a></h2>
+                `,
+  });
+
+  Transport.close();
+};
+
 const postUser = async (req, res) => {
   let { name, lastName, email, password, role, avatar } = req.body; //recibimos por body
   try {
@@ -68,26 +91,7 @@ const postUser = async (req, res) => {
               role: "alumno",
             });
             user = student; //guardamos el usuario en la variable
-            let Transport = nodemailer.createTransport({
-              host: "smtp.gmail.com",
-              port: 465,
-              secure: true, // true for 465, false for other ports
-              auth: {
-                user: EMAIL_USER, // generated ethereal user
-                pass: PASSWORD_USER, // generated ethereal password
-              },
-            });
-            await Transport.sendMail({
-              from: "<confirmpassword@learnzilla.com>", // sender address
-              to: email, // list of receivers
-              subject: "Confirmar cuenta", // Subject line
-              html: `
-                <h1>Hola ${name}</h1>
-                <h2>Entra al siguiente link para confirmar tu cuenta <a href="https://learnzilla-app.vercel.app/confirmUser" target="_blank" rel="noreferrer">Confirmar mi cuenta</a></h2>
-                `,
-            });
-
-            Transport.close();
+            //await sendConfirmationEmail(email, name);
           } else if (role === "profesor") {
             //si es profesor
             const teacher = await Teacher.create({
@@ -101,26 +105,7 @@ const postUser = async (req, res) => {
               role: "profesor",
             });
             user = teacher; //guardamos el usuario en la variable
-            let Transport = nodemailer.createTransport({
-              host: "smtp.gmail.com",
-              port: 465,
-              secure: true, // true for 465, false for other ports
-              auth: {
-                user: EMAIL_USER, // generated ethereal user
-                pass: PASSWORD_USER, // generated ethereal password
-              },
-            });
-            await Transport.sendMail({
-              from: "<confirmpassword@learnzilla.com>", // sender address
-              to: email, // list of receivers
-              subject: "Confirmar cuenta", // Subject line
-              html: `
-                <h1>Hola ${name}</h1>
-                <h2>Entra al siguiente link para confirmar tu cuenta <a href="https://learnzilla-app.vercel.app/confirmUser" target="_blank" rel="noreferrer">Confirmar mi cuenta</a></h2>
-                `,
-            });
-
-            Transport.close();
+            //await sendConfirmationEmail(email, name);
           } else if (role === "admin") {
             //si es admin
             const admin = await Admin.create({
@@ -140,7 +125,7 @@ const postUser = async (req, res) => {
           res
             .status(200)
             .send({ message: "Usuario Registrado con Éxito", userId: user.id });
-        }
+        },
       );
     });
   } catch (error) {
