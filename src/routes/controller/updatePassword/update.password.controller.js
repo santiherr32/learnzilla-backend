@@ -44,31 +44,35 @@ const updatePassword = async (req, res) => {
         }
       );
 
-      return res.status(200).send({
-        message: "Contraseña actualizada",
-      });
-    } else {
-      const teacher = await Teacher.findOne({ where: { email } });
-      if (teacher) {
-        const { newPassword, newSalt } = await generateHashedPassword(password);
-        await Teacher.update(
-          {
-            password: newPassword,
-            salt: newSalt,
-          },
-          {
-            where: {
-              email,
-            },
-          }
-        );
-
-        return res.status(200).send({
-          message: "Contraseña actualizada",
-        });
-      }
+      return;
     }
-    return res.status(404).send({ message: "Correo Inválido" });
+
+    const teacher = await Teacher.findOne({ where: { email } });
+
+    if (teacher) {
+      const { newPassword, newSalt } = await generateHashedPassword(password);
+      await Teacher.update(
+        {
+          password: newPassword,
+          salt: newSalt,
+        },
+        {
+          where: {
+            email,
+          },
+        }
+      );
+
+      return;
+    }
+
+    return res.status(200).send({
+      message: "Contraseña actualizada",
+    });
+
+    if (!teacher || !student) {
+      return res.status(404).send({ message: "Correo Inválido" });
+    }
   } catch (err) {
     console.log(err);
     res.status(404).send({ message: "Error al actualizar la contraseña" });
