@@ -44,17 +44,10 @@ router.post("/", async (req, res, next) => {
           return res.status(404).send({ message: "usuario invalido" });
       }
     }
-    const key = await pbkdf2Async(
-      password,
-      DbUser.salt,
-      parseInt(ITERATIONS),
-      parseInt(LONG_ENCRYPTION),
-      ENCRYPT_ALGORITHM
-    );
 
-    const encryptedPassword = key.toString(BASE);
+    const { newPassword } = await generateHashedPassword(password);
 
-    if (DbUser.password === encryptedPassword) {
+    if (DbUser.password === newPassword) {
       return res.status(200).send({ authorization: true, role, id: DbUser.id });
     }
 

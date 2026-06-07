@@ -11,11 +11,7 @@ const {
 } = process.env;
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
-
-const { promisify } = require("util");
-
-const randomBytesAsync = promisify(crypto.randomBytes);
-const pbkdf2Async = promisify(crypto.pbkdf2);
+import { generateHashedPassword } from "../../utils/PasswordHashing.js";
 
 const sendConfirmationEmail = async (email, name) => {
   let Transport = nodemailer.createTransport({
@@ -49,37 +45,22 @@ const postUser = async (req, res) => {
       avatar =
         "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200";
 
-    const salt = await randomBytesAsync(parseInt(BYTES));
-    const newSalt = salt.toString(BASE);
-
-    const key = await pbkdf2Async(
-      password,
-      newSalt,
-      parseInt(ITERATIONS),
-      parseInt(LONG_ENCRYPTION),
-      ENCRYPT_ALGORITHM
-    );
-
-    const encryptedPassword = key.toString(BASE);
-
     //Verificamos si alguno e los email está ya en la base de datos
-    const verifyEmailStudent = await Student.findOne({
-      where: { email },
-    });
-    const verifyEmailTeacher = await Teacher.findOne({
-      where: { email },
-    });
+    const verifyEmailStudent = await Student.findOne({ where: { email } });
+    const verifyEmailTeacher = await Teacher.findOne({ where: { email } });
     const verifyEmailAdmin = await Admin.findOne({ where: { email } });
     if (verifyEmailStudent || verifyEmailTeacher || verifyEmailAdmin) {
       return res.status(404).send({ message: "El correo ya esta registrado" });
     }
+
+    const { newPassword, newSalt } = await generateHashedPassword(password);
 
     if (role === "alumno") {
       const student = await Student.create({
         name,
         lastName,
         email: email.trim().toLowerCase(),
-        password: encryptedPassword,
+        password: newPassword,
         avatar,
         salt: newSalt,
         authorization: false,
@@ -93,7 +74,7 @@ const postUser = async (req, res) => {
         name,
         lastName,
         email: email.trim().toLowerCase(),
-        password: encryptedPassword,
+        password: newPassword,
         avatar,
         salt: newSalt,
         authorization: false,
@@ -107,7 +88,7 @@ const postUser = async (req, res) => {
         name,
         lastName,
         email: email.trim().toLowerCase(),
-        password: encryptedPassword,
+        password: newPassword,
         avatar,
         salt: newSalt,
         authorization: false,

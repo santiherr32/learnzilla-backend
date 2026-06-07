@@ -2,77 +2,51 @@ require("dotenv").config();
 const { Sequelize } = require("sequelize");
 const fs = require("fs");
 const path = require("path");
-const { DB_URL, DB_NAME, DB_USER, DB_PASSWORD } = process.env;
+const { DB_URL } = process.env;
 const { DataTypes } = require("sequelize");
 const pg = require("pg");
 const parse = require("pg-connection-string").parse;
 
 const config = parse(DB_URL);
 
-const sequelize =
+const commonSequelizeOptions = {
+  dialectModule: pg,
+  dialect: "postgres",
+  protocol: "postgres",
+  host: config.host,
+  port: config.port,
+  database: config.database,
+  username: config.user,
+  password: config.password,
+  pool: {
+    max: 3,
+    min: 1,
+    idle: 10000,
+    acquire: 30000, // The maximum time, in milliseconds, that pool will try to get connection before throwing error
+  },
+  dialectOptions: {
+    ssl: {
+      require: true,
+      // Ref.: https://github.com/brianc/node-postgres/issues/2009
+      rejectUnauthorized: false,
+    },
+    keepAlive: true,
+  },
+  ssl: true,
+  define: {
+    freezeTableName: true, // Respeta los nombres exactos de las tablas
+    underscored: false, // Usa camelCase en lugar de snake_case
+  },
+};
+
+const sequelize = new Sequelize(
   process.env.NODE_ENV === "production"
-    ? new Sequelize({
-        dialectModule: pg,
-        dialect: "postgres",
-        protocol: "postgres",
-        host: config.host,
-        port: config.port,
-        database: config.database,
-        username: config.user,
-        password: config.password,
-        pool: {
-          max: 3,
-          min: 1,
-          idle: 10000,
-          acquire: 30000, // The maximum time, in milliseconds, that pool will try to get connection before throwing error
-        },
-        dialectOptions: {
-          ssl: {
-            require: true,
-            // Ref.: https://github.com/brianc/node-postgres/issues/2009
-            rejectUnauthorized: false,
-          },
-          keepAlive: true,
-        },
-        ssl: true,
-        define: {
-          freezeTableName: true, // Respeta los nombres exactos de las tablas
-          underscored: false, // Usa camelCase en lugar de snake_case
-        },
-      })
-    : new Sequelize(
-        //`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}`,
-        // `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_USER}`,
-        {
-          dialectModule: pg,
-          dialect: "postgres",
-          protocol: "postgres",
-          host: config.host,
-          port: config.port,
-          database: config.database,
-          username: config.user,
-          password: config.password,
-          pool: {
-            max: 3,
-            min: 1,
-            idle: 10000,
-            acquire: 30000, // The maximum time, in milliseconds, that pool will try to get connection before throwing error
-          },
-          dialectOptions: {
-            ssl: {
-              require: true,
-              rejectUnauthorized: false,
-            },
-          },
-          ssl: true,
-          define: {
-            freezeTableName: true, // Respeta los nombres exactos de las tablas
-            underscored: false, // Usa camelCase en lugar de snake_case
-          },
-          logging: (msg) => console.log(msg), // set to console.log to see the raw SQL queries
-          native: false, // lets Sequelize know we can use pg-native for ~30% more speed
-        }
-      );
+    ? commonSequelizeOptions
+    : {
+        ...commonSequelizeOptions,
+        native: false, // lets Sequelize know we can use pg-native for ~30% more speed
+      }
+);
 const basename = path.basename(__filename);
 
 const modelDefiners = [];
@@ -193,19 +167,6 @@ Review.belongsTo(Course, { foreignKey: "FKcourseID" });
 //   },
 // });
 // Order.belongsTo(Student);
-
-// Test the connection with detailed error logging
-(async () => {
-  try {
-    await sequelize.authenticate();
-    console.log("Connection has been established successfully.");
-  } catch (error) {
-    console.error("Unable to connect to the database:", error);
-    if (error.original) {
-      console.error("Original error:", error.original);
-    }
-  }
-})();
 
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');

@@ -1,29 +1,13 @@
-require("dotenv").config();
 const { BYTES, BASE, ITERATIONS, LONG_ENCRYPTION, ENCRYPT_ALGORITHM } =
   process.env;
-const crypto = require("crypto");
-const { Student, Teacher } = require("../../../db");
+import { randomBytes, pbkdf2 } from "crypto";
+import { Student, Teacher } from "../../../db";
+import { generateHashedPassword } from "../utils/PasswordHashing";
 
-const { promisify } = require("util");
+import { promisify } from "util";
 
-const randomBytesAsync = promisify(crypto.randomBytes);
-const pbkdf2Async = promisify(crypto.pbkdf2);
-
-async function generateHashedPassword(password) {
-  const salt = await randomBytesAsync(parseInt(BYTES));
-  const newSalt = salt.toString(BASE);
-
-  const key = await pbkdf2Async(
-    password,
-    newSalt,
-    parseInt(ITERATIONS),
-    parseInt(LONG_ENCRYPTION),
-    ENCRYPT_ALGORITHM
-  );
-
-  const newPassword = key.toString(BASE);
-  return { newPassword, newSalt };
-}
+const randomBytesAsync = promisify(randomBytes);
+const pbkdf2Async = promisify(pbkdf2);
 
 const updatePassword = async (req, res) => {
   const { email, password } = req.body;
@@ -77,6 +61,6 @@ const updatePassword = async (req, res) => {
   }
 };
 
-module.exports = {
+export default {
   updatePassword,
 };
