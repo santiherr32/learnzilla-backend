@@ -1,16 +1,6 @@
-const { Student, Teacher, Admin } = require("../../../db.js");
-require("dotenv").config();
-const {
-  BYTES,
-  BASE,
-  ITERATIONS,
-  LONG_ENCRYPTION,
-  ENCRYPT_ALGORITHM,
-  EMAIL_USER,
-  PASSWORD_USER,
-} = process.env;
-const crypto = require("crypto");
-const nodemailer = require("nodemailer");
+import { Student, Teacher, Admin } from "../../db";
+const { EMAIL_USER, PASSWORD_USER } = process.env;
+import { nodemailer } from "nodemailer";
 import { generateHashedPassword } from "../../utils/PasswordHashing.js";
 
 const sendConfirmationEmail = async (email, name) => {
@@ -96,7 +86,7 @@ const postUser = async (req, res) => {
       });
       user = admin;
     } else {
-      res.status(404).send({ message: "El rol no es valido" });
+      return res.status(404).send({ message: "El rol no es valido" });
     }
     res
       .status(200)

@@ -1,5 +1,4 @@
-require("dotenv").config();
-const { Router } = require("express");
+import { Router } from "express";
 const {
   BASE,
   ITERATIONS,
@@ -8,12 +7,12 @@ const {
   EMAIL_ADMIN,
   PASSWORD_ADMIN,
 } = process.env;
-const crypto = require("crypto");
-const { promisify } = require("util");
+import { pbkdf2 } from "crypto";
+import { promisify } from "util";
 const router = Router();
-const { Student, Teacher, Admin } = require("../db");
+import { Student, Teacher, Admin } from "../db";
 
-const pbkdf2Async = promisify(crypto.pbkdf2);
+const pbkdf2Async = promisify(pbkdf2);
 
 router.post("/", async (req, res, next) => {
   const { email, password } = req.body;
@@ -58,4 +57,4 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-module.exports = router;
+export default router;

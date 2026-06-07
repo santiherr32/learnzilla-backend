@@ -1,9 +1,9 @@
-const express = require("express");
-const router = express();
-const { Student, Teacher } = require("../db");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-const crypto = require("crypto");
+import express from "express";
+const router = express().Router();
+import { Student, Teacher } from "../db";
+import cors from "cors";
+import { json, urlencoded } from "body-parser";
+import { randomBytes, pbkdf2 } from "crypto";
 const {
   BYTES,
   BASE,
@@ -13,8 +13,8 @@ const {
   EMAIL_USER,
   PASSWORD_USER,
 } = process.env;
-router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({ extended: true }));
+router.use(json());
+router.use(urlencoded({ extended: true }));
 router.use(cors());
 
 router.put("/confirm", async (req, res) => {
@@ -64,31 +64,20 @@ router.post("/forgotpassword", async (req, res) => {
       return res.sendStatus(404).send("El correo no esta registrado");
     }
     if (verifyEmailStudent) {
-      crypto.randomBytes(parseInt(BYTES), (error, salt) => {
-        const newSalt = salt.toString(BASE);
-        crypto.pbkdf2(
-          password,
-          newSalt,
-          parseInt(ITERATIONS),
-          parseInt(LONG_ENCRYPTION),
-          ENCRYPT_ALGORITHM,
-          async (error, key) => {
-            const encryptedPassword = key.toString(BASE);
-            await Student.update(
-              {
-                password: encryptedPassword,
-                salt: newSalt,
-              },
-              {
-                where: {
-                  email,
-                },
-              }
-            );
-            res.send({ message: "Contraseña cambiada" });
-          }
-        );
-      });
+      const { newPassword, newSalt } = await generateHashedPassword(password);
+
+      await Student.update(
+        {
+          password: newPassword,
+          salt: newSalt,
+        },
+        {
+          where: {
+            email,
+          },
+        }
+      );
+      res.send({ message: "Contraseña cambiada" });
     } else {
       res.status(400).send("Email incorrecto");
     }
@@ -97,7 +86,8 @@ router.post("/forgotpassword", async (req, res) => {
     if (verifyEmailTeacher) {
       await Teacher.update(
         {
-          password,
+          password: newPassword,
+          salt: newSalt,
         },
         {
           where: {
@@ -138,4 +128,4 @@ router.get("/student", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;
