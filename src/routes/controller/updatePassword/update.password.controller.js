@@ -70,9 +70,7 @@ const updatePassword = async (req, res) => {
       });
     }
 
-    if (!teacher || !student) {
-      return res.status(404).send({ message: "Correo Inválido" });
-    }
+    return res.status(404).send({ message: "Correo Inválido" });
   } catch (err) {
     console.log(err);
     res.status(404).send({ message: "Error al actualizar la contraseña" });
