@@ -44,7 +44,9 @@ const updatePassword = async (req, res) => {
         }
       );
 
-      return;
+      return res.status(200).send({
+        message: "Contraseña actualizada",
+      });
     }
 
     const teacher = await Teacher.findOne({ where: { email } });
@@ -63,12 +65,10 @@ const updatePassword = async (req, res) => {
         }
       );
 
-      return;
+      return res.status(200).send({
+        message: "Contraseña actualizada",
+      });
     }
-
-    return res.status(200).send({
-      message: "Contraseña actualizada",
-    });
 
     if (!teacher || !student) {
       return res.status(404).send({ message: "Correo Inválido" });
