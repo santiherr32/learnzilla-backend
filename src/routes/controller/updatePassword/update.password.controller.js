@@ -11,77 +11,66 @@ const {
 const crypto = require("crypto");
 const { Student, Teacher } = require("../../../db");
 
+const { promisify } = require("util");
+
+const randomBytesAsync = promisify(crypto.randomBytes);
+const pbkdf2Async = promisify(crypto.pbkdf2);
+
 const updatePassword = async (req, res) => {
   const { email, password } = req.body;
   try {
     const student = await Student.findOne({ where: { email } });
-    // console.log("student: ", student)
+    const salt = await randomBytesAsync(parseInt(BYTES));
+    const newSalt = salt.toString(BASE);
+
+    const key = await pbkdf2Async(
+      password,
+      newSalt,
+      parseInt(ITERATIONS),
+      parseInt(LONG_ENCRYPTION),
+      ENCRYPT_ALGORITHM
+    );
+
+    const newPassword = key.toString(BASE);
     if (student) {
-      // console.log("¿Entra a student?")
-      crypto.randomBytes(parseInt(BYTES), (error, salt) => {
-        const newSalt = salt.toString(BASE);
-        crypto.pbkdf2(
-          password,
-          newSalt,
-          parseInt(ITERATIONS),
-          parseInt(LONG_ENCRYPTION),
-          ENCRYPT_ALGORITHM,
-          (error, key) => {
-            const newPassword = key.toString(BASE);
-            Student.update(
-              {
-                password: newPassword,
-                salt: newSalt,
-              },
-              {
-                where: {
-                  email,
-                },
-              }
-            );
-          }
-        );
-        // console.log("¿Envía el mensaje de actualizar contraseña en student?")
+      await Student.update(
+        {
+          password: newPassword,
+          salt: newSalt,
+        },
+        {
+          where: {
+            email,
+          },
+        }
+      );
+
+      return res.status(200).send({
+        message: "Contraseña actualizada",
       });
-      return res.status(200).send({ message: "Contraseña actualizada" });
     } else {
       const teacher = await Teacher.findOne({ where: { email } });
-      // console.log("teacher: ", teacher)
       if (teacher) {
-        // console.log("¿Entra a teacher?")
-        crypto.randomBytes(parseInt(BYTES), (error, salt) => {
-          const newSalt = salt.toString(BASE);
-          crypto.pbkdf2(
-            password,
-            newSalt,
-            parseInt(ITERATIONS),
-            parseInt(LONG_ENCRYPTION),
-            ENCRYPT_ALGORITHM,
-            (error, key) => {
-              const newPassword = key.toString(BASE);
-              Teacher.update(
-                {
-                  password: newPassword,
-                  salt: newSalt,
-                },
-                {
-                  where: {
-                    email,
-                  },
-                }
-              );
-            }
-          );
-          // console.log("¿envía el mensaje de actualizar contraseña en teacher?")
+        await Teacher.update(
+          {
+            password: newPassword,
+            salt: newSalt,
+          },
+          {
+            where: {
+              email,
+            },
+          }
+        );
+
+        return res.status(200).send({
+          message: "Contraseña actualizada",
         });
-        return res.status(200).send({ message: "Contraseña actualizada" });
       }
     }
-    // console.log("¿Envía el mensaje de correo inválido?")
     return res.status(404).send({ message: "Correo Inválido" });
   } catch (err) {
     console.log(err);
-    // console.log("¿Envía mensaje de error al actualizar la contraseña?")
     res.status(404).send({ message: "Error al actualizar la contraseña" });
   }
 };

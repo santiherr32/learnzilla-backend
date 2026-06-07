@@ -9,8 +9,11 @@ const {
   PASSWORD_ADMIN,
 } = process.env;
 const crypto = require("crypto");
+const { promisify } = require("util");
 const router = Router();
 const { Student, Teacher, Admin } = require("../db");
+
+const pbkdf2Async = promisify(crypto.pbkdf2);
 
 router.post("/", async (req, res, next) => {
   const { email, password } = req.body;
@@ -41,24 +44,21 @@ router.post("/", async (req, res, next) => {
           return res.status(404).send({ message: "usuario invalido" });
       }
     }
-    crypto.pbkdf2(
-      //utilizamos la libreria crypto para encriptar la contraseña
-      password, //contraseña a encriptar
-      DbUser.salt, //salt guardado en base de datos
-      parseInt(ITERATIONS), //iteraciones
-      parseInt(LONG_ENCRYPTION), //longitud de la contraseña encriptada
-      ENCRYPT_ALGORITHM, //algoritmo de encriptación
-      async (error, key) => {
-        const encryptedPassword = key.toString(BASE); //encriptamos la contraseña
-        if (DbUser.password === encryptedPassword) {
-          //comparamos la contraseña encriptada con la guardada en la base de datos
-          return res
-            .status(200)
-            .send({ authorization: true, role: role, id: DbUser.id });
-        }
-        return res.status(404).send({ authorization: false });
-      },
+    const key = await pbkdf2Async(
+      password,
+      DbUser.salt,
+      parseInt(ITERATIONS),
+      parseInt(LONG_ENCRYPTION),
+      ENCRYPT_ALGORITHM
     );
+
+    const encryptedPassword = key.toString(BASE);
+
+    if (DbUser.password === encryptedPassword) {
+      return res.status(200).send({ authorization: true, role, id: DbUser.id });
+    }
+
+    return res.status(404).send({ authorization: false });
   } catch (error) {
     console.error(error);
     res.status(404).send(error);

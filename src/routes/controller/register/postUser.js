@@ -12,6 +12,11 @@ const {
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 
+const { promisify } = require("util");
+
+const randomBytesAsync = promisify(crypto.randomBytes);
+const pbkdf2Async = promisify(crypto.pbkdf2);
+
 const sendConfirmationEmail = async (email, name) => {
   let Transport = nodemailer.createTransport({
     host: "smtp.gmail.com",
@@ -43,91 +48,78 @@ const postUser = async (req, res) => {
       //Asignamos avatar por defecto en caso de no venir
       avatar =
         "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200";
-    //vamos a utilizar la libería cryto de node para encriptar la contraseña
-    crypto.randomBytes(parseInt(BYTES), (error, salt) => {
-      //recibimos una base numérica en bytes una función callback
-      //salt ===> es un string generado aleatoriamente que utilizamos para encriptar la contraseña, se guarda en base de datos
-      const newSalt = salt.toString(BASE); //generamos un nuevo salt
-      crypto.pbkdf2(
-        password,
-        newSalt,
-        parseInt(ITERATIONS), //iteraciones para encriptar
-        parseInt(LONG_ENCRYPTION), //longitud de la contraseña encriptada
-        ENCRYPT_ALGORITHM, //algoritmo de encriptación
-        async (error, key) => {
-          //Verificamos si alguno e los email está ya en la base de datos
-          const verifyEmailStudent = await Student.findOne({
-            where: { email },
-          }); //buscamos el usuario en la tabla de estudiantes
-          if (verifyEmailStudent) {
-            return res
-              .status(404)
-              .send({ message: "El correo ya esta registrado" });
-          }
-          const verifyEmailTeacher = await Teacher.findOne({
-            where: { email },
-          }); //buscamos el usuario en la tabla de profesores
-          if (verifyEmailTeacher) {
-            return res
-              .status(404)
-              .send({ message: "El correo ya esta registrado" });
-          }
-          const verifyEmailAdmin = await Admin.findOne({ where: { email } }); //buscamos el usuario en la tabla de administradores
-          if (verifyEmailAdmin) {
-            return res
-              .status(404)
-              .send({ message: "El correo ya esta registrado" });
-          }
-          const encryptedPassword = key.toString(BASE); //encriptamos la contraseña
-          if (role === "alumno") {
-            const student = await Student.create({
-              name,
-              lastName,
-              email: email.trim().toLowerCase(),
-              password: encryptedPassword,
-              avatar,
-              salt: newSalt,
-              authorization: false,
-              role: "alumno",
-            });
-            user = student; //guardamos el usuario en la variable
-            //await sendConfirmationEmail(email, name);
-          } else if (role === "profesor") {
-            //si es profesor
-            const teacher = await Teacher.create({
-              name,
-              lastName,
-              email: email.trim().toLowerCase(),
-              password: encryptedPassword,
-              avatar,
-              salt: newSalt,
-              authorization: false,
-              role: "profesor",
-            });
-            user = teacher; //guardamos el usuario en la variable
-            //await sendConfirmationEmail(email, name);
-          } else if (role === "admin") {
-            //si es admin
-            const admin = await Admin.create({
-              name,
-              lastName,
-              email: email.trim().toLowerCase(),
-              password: encryptedPassword,
-              avatar,
-              salt: newSalt,
-              authorization: false,
-              role: "admin",
-            });
-            user = admin; //guardamos el usuario en la variable
-          } else {
-            res.status(404).send({ message: "El rol no es valido" });
-          }
-          res
-            .status(200)
-            .send({ message: "Usuario Registrado con Éxito", userId: user.id });
-        },
-      );
+
+    const salt = await randomBytesAsync(parseInt(BYTES));
+    const newSalt = salt.toString(BASE);
+
+    const key = await pbkdf2Async(
+      password,
+      newSalt,
+      parseInt(ITERATIONS),
+      parseInt(LONG_ENCRYPTION),
+      ENCRYPT_ALGORITHM
+    );
+
+    const encryptedPassword = key.toString(BASE);
+
+    //Verificamos si alguno e los email está ya en la base de datos
+    const verifyEmailStudent = await Student.findOne({
+      where: { email },
     });
+    const verifyEmailTeacher = await Teacher.findOne({
+      where: { email },
+    });
+    const verifyEmailAdmin = await Admin.findOne({ where: { email } });
+    if (verifyEmailStudent || verifyEmailTeacher || verifyEmailAdmin) {
+      return res.status(404).send({ message: "El correo ya esta registrado" });
+    }
+
+    if (role === "alumno") {
+      const student = await Student.create({
+        name,
+        lastName,
+        email: email.trim().toLowerCase(),
+        password: encryptedPassword,
+        avatar,
+        salt: newSalt,
+        authorization: false,
+        role: "alumno",
+      });
+      user = student;
+      //await sendConfirmationEmail(email, name);
+    } else if (role === "profesor") {
+      //si es profesor
+      const teacher = await Teacher.create({
+        name,
+        lastName,
+        email: email.trim().toLowerCase(),
+        password: encryptedPassword,
+        avatar,
+        salt: newSalt,
+        authorization: false,
+        role: "profesor",
+      });
+      user = teacher;
+      //await sendConfirmationEmail(email, name);
+    } else if (role === "admin") {
+      //si es admin
+      const admin = await Admin.create({
+        name,
+        lastName,
+        email: email.trim().toLowerCase(),
+        password: encryptedPassword,
+        avatar,
+        salt: newSalt,
+        authorization: false,
+        role: "admin",
+      });
+      user = admin;
+    } else {
+      res.status(404).send({ message: "El rol no es valido" });
+    }
+    res
+      .status(200)
+      .send({ message: "Usuario Registrado con Éxito", userId: user.id });
   } catch (error) {
     console.error(error);
     res.status(404).send(error);
