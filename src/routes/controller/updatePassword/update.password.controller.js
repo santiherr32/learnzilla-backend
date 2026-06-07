@@ -29,9 +29,9 @@ const updatePassword = async (req, res) => {
   const { email, password } = req.body;
   try {
     const student = await Student.findOne({ where: { email } });
-    const { newPassword, newSalt } = await generateHashedPassword(password);
 
     if (student) {
+      const { newPassword, newSalt } = await generateHashedPassword(password);
       await Student.update(
         {
           password: newPassword,
@@ -50,6 +50,7 @@ const updatePassword = async (req, res) => {
     } else {
       const teacher = await Teacher.findOne({ where: { email } });
       if (teacher) {
+        const { newPassword, newSalt } = await generateHashedPassword(password);
         await Teacher.update(
           {
             password: newPassword,
