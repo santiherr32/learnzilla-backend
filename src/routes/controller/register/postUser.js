@@ -1,6 +1,6 @@
 import { Student, Teacher, Admin } from "../../db";
 const { EMAIL_USER, PASSWORD_USER } = process.env;
-import { nodemailer } from "nodemailer";
+import nodemailer from "nodemailer";
 import { generateHashedPassword } from "../../utils/PasswordHashing.js";
 
 const sendConfirmationEmail = async (email, name) => {
@@ -97,6 +97,4 @@ const postUser = async (req, res) => {
   }
 };
 
-module.exports = {
-  postUser,
-};
+export default postUser;
