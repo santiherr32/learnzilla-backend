@@ -1,4 +1,4 @@
-const { Student } = require("../../../db.js");
+import { Student } from "../../../db.js";
 
 const updateStudent = async (req, res) => {
   const { id } = req.params;
@@ -35,6 +35,4 @@ const updateStudent = async (req, res) => {
   }
 };
 
-module.exports = {
-  updateStudent,
-};
+export { updateStudent, };

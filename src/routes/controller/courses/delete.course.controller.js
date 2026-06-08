@@ -1,4 +1,4 @@
-const { Course } = require("../../../db.js");
+import { Course } from "../../../db.js";
 
 const deleteCourse = async (req, res) => {
   const { id } = req.params;
@@ -26,6 +26,4 @@ const deleteCourse = async (req, res) => {
   }
 };
 
-module.exports = {
-  deleteCourse,
-};
+export { deleteCourse, };

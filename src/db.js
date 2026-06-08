@@ -1,11 +1,10 @@
-require("dotenv").config();
-const { Sequelize } = require("sequelize");
-const fs = require("fs");
-const path = require("path");
+import { Sequelize } from "sequelize";
+import { readdirSync } from "fs";
+import { basename as _basename, join } from "path";
 const { DB_URL } = process.env;
-const { DataTypes } = require("sequelize");
-const pg = require("pg");
-const parse = require("pg-connection-string").parse;
+import { DataTypes } from "sequelize";
+import pg from "pg";
+import { parse } from "pg-connection-string";
 
 const config = parse(DB_URL);
 
@@ -47,18 +46,18 @@ const sequelize = new Sequelize(
         native: false, // lets Sequelize know we can use pg-native for ~30% more speed
       }
 );
-const basename = path.basename(__filename);
+const basename = _basename(__filename);
 
 const modelDefiners = [];
 
 // Leemos todos los archivos de la carpeta Models, los requerimos y agregamos al arreglo modelDefiners
-fs.readdirSync(path.join(__dirname, "/models"))
+readdirSync(join(__dirname, "/models"))
   .filter(
     (file) =>
       file.indexOf(".") !== 0 && file !== basename && file.slice(-3) === ".js"
   )
   .forEach((file) => {
-    modelDefiners.push(require(path.join(__dirname, "/models", file)));
+    modelDefiners.push(require(join(__dirname, "/models", file)));
   });
 
 // Injectamos la conexion (sequelize) a todos los modelos
@@ -168,7 +167,7 @@ Review.belongsTo(Course, { foreignKey: "FKcourseID" });
 // });
 // Order.belongsTo(Student);
 
-module.exports = {
-  ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
-  conn: sequelize, // para importart la conexión { conn } = require('./db.js');
+export default {
+  ...sequelize.models, // para poder importar los modelos
+  conn: sequelize, // para importart la conexión
 };

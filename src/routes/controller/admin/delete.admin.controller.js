@@ -1,4 +1,4 @@
-const { Admin } = require("../../../db.js");
+import { Admin } from "../../../db.js";
 
 const deteteAdmin = async (req, res) => {
   const { id } = req.params;
@@ -26,6 +26,4 @@ const deteteAdmin = async (req, res) => {
   }
 };
 
-module.exports = {
-  deteteAdmin,
-};
+export { deteteAdmin, };

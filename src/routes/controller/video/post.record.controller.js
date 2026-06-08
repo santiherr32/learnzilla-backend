@@ -1,4 +1,4 @@
-const { Records } = require("../../../db");
+import { Records } from "../../../db.js";
 
 const postRecord = async (req, res) => {
   try {
@@ -15,6 +15,4 @@ const postRecord = async (req, res) => {
   }
 };
 
-module.exports = {
-  postRecord,
-};
+export { postRecord, };

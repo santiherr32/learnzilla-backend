@@ -1,4 +1,4 @@
-const { Order } = require("../../../db");
+import { Order } from "../../../db.js";
 
 const getOrders = async (req, res) => {
   try {
@@ -28,7 +28,5 @@ const getOrder = async (req, res) => {
   }
 };
 
-module.exports = {
-  getOrders,
-  getOrder,
-};
+export { getOrders,
+  getOrder, };

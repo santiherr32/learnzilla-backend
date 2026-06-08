@@ -1,4 +1,4 @@
-const { Student } = require("../../../db.js");
+import { Student } from "../../../db.js";
 
 const deteteStudent = async (req, res) => {
   const { id } = req.params;
@@ -26,6 +26,4 @@ const deteteStudent = async (req, res) => {
   }
 };
 
-module.exports = {
-  deteteStudent,
-};
+export { deteteStudent, };

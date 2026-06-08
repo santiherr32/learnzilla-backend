@@ -1,4 +1,4 @@
-const { Teacher } = require("../../../db.js");
+import { Teacher } from "../../../db.js";
 
 const getTeachers = async (req, res) => {
   try {
@@ -31,7 +31,5 @@ const getTeacher = async (req, res) => {
   }
 };
 
-module.exports = {
-  getTeachers,
-  getTeacher,
-};
+export { getTeachers,
+  getTeacher, };

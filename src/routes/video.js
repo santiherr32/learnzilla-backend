@@ -1,14 +1,14 @@
-const { Router } = require("express");
+import { Router } from "express";
 const router = Router();
-const {
+import {
   getAllVideos,
   getVideoDetail,
   getCourseVideos,
-} = require("./controller/video/get.video.controller");
-const { postVideo } = require("./controller/video/post.video.controller");
-const { postRecord } = require("./controller/video/post.record.controller");
-const { updateVideo } = require("./controller/video/update.video.controller");
-const { deleteVideo } = require("./controller/video/delete.video.controller");
+} from "./controller/video/get.video.controller";
+import { postVideo } from "./controller/video/post.video.controller";
+import { postRecord } from "./controller/video/post.record.controller";
+import { updateVideo } from "./controller/video/update.video.controller";
+import { deleteVideo } from "./controller/video/delete.video.controller";
 
 router.get("/", getAllVideos);
 router.get("/detail/:id", getVideoDetail);
@@ -18,4 +18,4 @@ router.post("/newrecord", postRecord); //para crear un nuevo record, recibe par√
 router.put("/update/:id", updateVideo);
 router.delete("/delete/:id", deleteVideo);
 
-module.exports = router;
+export default router;

@@ -1,4 +1,4 @@
-const { Course, Student, Review } = require("../../../db.js");
+import { Course, Student, Review } from "../../../db.js";
 
 const postReview = async (req, res) => {
   const { courseId, studentId, score } = req.body;
@@ -49,6 +49,4 @@ const postReview = async (req, res) => {
   }
 };
 
-module.exports = {
-  postReview,
-};
+export { postReview, };

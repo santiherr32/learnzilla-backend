@@ -1,7 +1,8 @@
-const js = require("@eslint/js");
-const globals = require("globals");
+import js from "@eslint/js";
+import { defineConfig } from "eslint/config";
+import globals from "globals";
 
-module.exports = [
+export default defineConfig([
   {
     ignores: [
       "node_modules/**",
@@ -19,7 +20,7 @@ module.exports = [
 
     languageOptions: {
       ecmaVersion: "latest",
-      sourceType: "commonjs",
+      sourceType: "module",
 
       globals: {
         ...globals.node,
@@ -51,4 +52,4 @@ module.exports = [
       "preserve-caught-error": "off",
     },
   },
-];
+]);

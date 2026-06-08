@@ -1,6 +1,6 @@
-const path = require("path");
-const multer = require("multer");
-const mimetype = require("mime-types");
+import path from "path";
+import multer from "multer";
+import mimetype from "mime-types";
 
 let storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -31,8 +31,6 @@ const uploadFiles = (req, res) => {
   //   return res.send(req.file);
 };
 
-module.exports = {
-  homePage,
+export { homePage,
   uploadFiles,
-  upload,
-};
+  upload, };

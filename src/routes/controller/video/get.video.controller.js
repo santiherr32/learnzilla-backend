@@ -1,4 +1,4 @@
-const { Video } = require("../../../db");
+import { Video } from "../../../db.js";
 
 const getAllVideos = async (req, res) => {
   try {
@@ -47,8 +47,6 @@ const getCourseVideos = async (req, res) => {
   }
 };
 
-module.exports = {
-  getAllVideos,
+export { getAllVideos,
   getVideoDetail,
-  getCourseVideos,
-};
+  getCourseVideos, };

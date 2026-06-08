@@ -1,4 +1,4 @@
-const { Admin } = require("../../../db.js");
+import { Admin } from "../../../db.js";
 
 const updateAdmin = async (req, res) => {
   const { id } = req.params;
@@ -35,6 +35,4 @@ const updateAdmin = async (req, res) => {
   }
 };
 
-module.exports = {
-  updateAdmin,
-};
+export { updateAdmin, };

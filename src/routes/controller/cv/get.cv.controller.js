@@ -1,4 +1,4 @@
-const { Cv } = require("../../../db");
+import { Cv } from "../../../db.js";
 
 const getCvs = async (req, res) => {
   try {
@@ -22,7 +22,5 @@ const getCv = async (req, res) => {
   }
 };
 
-module.exports = {
-  getCvs,
-  getCv,
-};
+export { getCvs,
+  getCv, };

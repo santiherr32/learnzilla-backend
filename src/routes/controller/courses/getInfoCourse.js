@@ -1,5 +1,5 @@
 //Función para obtener la infomación de un curso
-const { Category, Course, Review, Teacher, conn } = require("../../../db.js");
+import { Category, Course, Review, Teacher, conn } from "../../../db.js";
 
 const getInfoCourse = async (name) => {
   try {
@@ -66,6 +66,4 @@ const getInfoCourse = async (name) => {
   }
 };
 
-module.exports = {
-  getInfoCourse,
-};
+export { getInfoCourse, };

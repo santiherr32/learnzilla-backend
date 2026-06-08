@@ -1,6 +1,6 @@
-require("dotenv").config();
+import "dotenv/config";
 const { SECRET_STRING } = process.env;
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
 
 function signToken(_id) {
   return jwt.sign({ _id }, SECRET_STRING, {
@@ -8,4 +8,4 @@ function signToken(_id) {
   });
 }
 
-module.exports = { signToken };
+export { signToken };

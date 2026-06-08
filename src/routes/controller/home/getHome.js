@@ -1,4 +1,4 @@
-const { Records } = require("../../../db.js");
+import { Records } from "../../../db.js";
 
 const getLastFiveCourses = async (req, res, next) => {
   try {
@@ -19,6 +19,4 @@ const getLastFiveCourses = async (req, res, next) => {
   }
 };
 
-module.exports = {
-  getLastFiveCourses,
-};
+export { getLastFiveCourses, };

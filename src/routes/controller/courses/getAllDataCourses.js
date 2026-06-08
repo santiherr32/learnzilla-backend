@@ -1,7 +1,7 @@
 //Función para obtener la data de todos los cursos
-const { where } = require("sequelize");
-const { Course, Category, Review, Teacher, conn } = require("../../../db.js");
-const { getInfoCourse } = require("./getInfoCourse");
+import { where } from "sequelize";
+import { Course, Category, Review, Teacher, conn } from "../../../db.js";
+import { getInfoCourse } from "./getInfoCourse.js";
 
 const getAllDataCourses = async () => {
   try {
@@ -75,7 +75,5 @@ const getAllDataCoursesOfOneTeacher = async (teacherId) => {
   }
 };
 
-module.exports = {
-  getAllDataCourses,
-  getAllDataCoursesOfOneTeacher,
-};
+export { getAllDataCourses,
+  getAllDataCoursesOfOneTeacher, };

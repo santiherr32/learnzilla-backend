@@ -1,4 +1,4 @@
-const { Video } = require("../../../db");
+import { Video } from "../../../db.js";
 
 const updateVideo = async (req, res) => {
   const { id } = req.params;
@@ -30,6 +30,4 @@ const updateVideo = async (req, res) => {
   }
 };
 
-module.exports = {
-  updateVideo,
-};
+export { updateVideo, };

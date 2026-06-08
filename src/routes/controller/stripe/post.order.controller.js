@@ -1,7 +1,8 @@
-require("dotenv").config();
+import "dotenv/config";
 const { STRIPE_KEY } = process.env;
-const { Student, Course, Order } = require("../../../db.js");
-const stripe = require("stripe")(STRIPE_KEY);
+import { Student, Course, Order } from "../../../db.js";
+import Stripe from "stripe";
+const stripe = Stripe(STRIPE_KEY);
 
 const stripePay = async (req, res) => {
   const { email, token, orderId } = req.body;
@@ -95,4 +96,4 @@ const generateOrder = async (req, res) => {
   }
 };
 
-module.exports = { stripePay, generateOrder };
+export { stripePay, generateOrder };

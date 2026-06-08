@@ -1,6 +1,6 @@
-require("dotenv").config();
+import "dotenv/config";
 const { CLIENT_ID } = process.env;
-const { Student } = require("../../db");
+import { Student } from "../../db.js";
 
 const clientId = CLIENT_ID;
 
@@ -25,6 +25,4 @@ const loginGoogle = async (req, res) => {
   }
 };
 
-module.exports = {
-  loginGoogle,
-};
+export { loginGoogle, };

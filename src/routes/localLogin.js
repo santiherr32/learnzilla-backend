@@ -7,12 +7,9 @@ const {
   EMAIL_ADMIN,
   PASSWORD_ADMIN,
 } = process.env;
-import { pbkdf2 } from "crypto";
-import { promisify } from "util";
+import { verifyHashedPassword } from "../routes/utils/PasswordHashing";
 const router = Router();
 import { Student, Teacher, Admin } from "../db";
-
-const pbkdf2Async = promisify(pbkdf2);
 
 router.post("/", async (req, res, next) => {
   const { email, password } = req.body;
@@ -44,7 +41,7 @@ router.post("/", async (req, res, next) => {
       }
     }
 
-    const { newPassword } = await generateHashedPassword(password);
+    const { newPassword } = await verifyHashedPassword(password, DbUser.salt);
 
     if (DbUser.password === newPassword) {
       return res.status(200).send({ authorization: true, role, id: DbUser.id });

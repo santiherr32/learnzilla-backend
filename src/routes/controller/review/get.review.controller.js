@@ -1,5 +1,5 @@
-const { Review } = require("../../../db.js");
-const { Op } = require("sequelize");
+import { Review } from "../../../db.js";
+import { Op } from "sequelize";
 
 const getStudentReview = async (req, res) => {
   const { studentId, courseId } = req.query;
@@ -48,8 +48,6 @@ const getReviewById = async (req, res) => {
   }
 };
 
-module.exports = {
-  getReview,
+export { getReview,
   getReviewById,
-  getStudentReview,
-};
+  getStudentReview, };

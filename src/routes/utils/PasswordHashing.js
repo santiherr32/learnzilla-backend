@@ -23,10 +23,10 @@ async function generateHashedPassword(password) {
   return { newPassword, newSalt };
 }
 
-async function verifyHashedPassword(password, salt, hashedPassword) {
+async function verifyHashedPassword(password, salt) {
   const key = await pbkdf2Async(
     password,
-    DbUser.salt,
+    salt,
     parseInt(ITERATIONS),
     parseInt(LONG_ENCRYPTION),
     ENCRYPT_ALGORITHM
@@ -37,7 +37,4 @@ async function verifyHashedPassword(password, salt, hashedPassword) {
   return newPassword;
 }
 
-export default {
-  generateHashedPassword,
-  verifyHashedPassword,
-};
+export { generateHashedPassword, verifyHashedPassword };

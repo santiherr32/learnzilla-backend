@@ -1,15 +1,15 @@
-const { Router } = require("express");
+import { Router } from "express";
 const router = Router();
-const { postReview } = require("./controller/review/post.review.controller");
-const {
+import { postReview } from "./controller/review/post.review.controller";
+import {
   getReview,
   getReviewById,
   getStudentReview,
-} = require("./controller/review/get.review.controller");
+} from "./controller/review/get.review.controller";
 
 router.post("/create", postReview);
 router.get("/", getReview);
 router.get("/detail/:id", getReviewById);
 router.get("/verify", getStudentReview);
 
-module.exports = router;
+export default router;

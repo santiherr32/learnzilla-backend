@@ -1,6 +1,6 @@
-const { Student, Course } = require("../../../db.js");
-const { getInfoStudent } = require("./getInfoStudent.js");
-const { getAllStudents } = require("./getAllStudents.js");
+import { Student, Course } from "../../../db.js";
+import { getInfoStudent } from "./getInfoStudent.js";
+import { getAllStudents } from "./getAllStudents.js";
 
 const getStudents = async (req, res) => {
   try {
@@ -27,7 +27,5 @@ const getStudent = async (req, res) => {
   }
 };
 
-module.exports = {
-  getStudents,
-  getStudent,
-};
+export { getStudents,
+  getStudent, };

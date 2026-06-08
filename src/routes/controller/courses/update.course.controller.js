@@ -1,6 +1,6 @@
-const { Course, Category } = require("../../../db");
-const { getInfoCourse } = require("./getInfoCourse");
-const { getCategoryId } = require("../getCategoryId");
+import { Course, Category } from "../../../db.js";
+import { getInfoCourse } from "./getInfoCourse.js";
+import { getCategoryId } from "../getCategoryId.js";
 const updateCourse = async (req, res) => {
   const { id } = req.params;
   const { name, description, price, img } = req.body;
@@ -34,6 +34,4 @@ const updateCourse = async (req, res) => {
   }
 };
 
-module.exports = {
-  updateCourse,
-};
+export { updateCourse, };

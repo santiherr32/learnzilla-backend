@@ -1,4 +1,4 @@
-const { Course, Video } = require("../../../db");
+import { Course, Video } from "../../../db";
 
 const postVideo = async (req, res) => {
   let { title, description, url, cursoId, img } = req.body;
@@ -30,6 +30,6 @@ const postVideo = async (req, res) => {
   }
 };
 
-module.exports = {
+export default {
   postVideo,
 };

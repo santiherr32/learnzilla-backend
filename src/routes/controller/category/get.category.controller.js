@@ -1,4 +1,4 @@
-const { Category } = require("../../../db.js");
+import { Category } from "../../../db.js";
 
 const getCategory = async (req, res, next) => {
   try {
@@ -9,6 +9,4 @@ const getCategory = async (req, res, next) => {
   }
 };
 
-module.exports = {
-  getCategory,
-};
+export { getCategory, };

@@ -1,4 +1,4 @@
-const { Video } = require("../../../db");
+import { Video } from "../../../db.js";
 
 const deleteVideo = async (req, res) => {
   const { id } = req.params;
@@ -22,6 +22,4 @@ const deleteVideo = async (req, res) => {
   }
 };
 
-module.exports = {
-  deleteVideo,
-};
+export { deleteVideo, };

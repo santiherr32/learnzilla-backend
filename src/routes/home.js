@@ -1,7 +1,7 @@
-const { Router } = require("express");
+import { Router } from "express";
 const router = Router();
-const { getLastFiveCourses } = require("./controller/home/getHome");
+import { getLastFiveCourses } from "./controller/home/getHome.js";
 
 router.get("/", getLastFiveCourses);
 
-module.exports = router;
+export default router;

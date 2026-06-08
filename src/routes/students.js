@@ -1,21 +1,17 @@
-const { Router } = require("express");
+import { Router } from "express";
 
 const router = Router();
 
-const {
+import {
   getStudents,
   getStudent,
-} = require("./controller/students/get.students.controller");
-const {
-  updateStudent,
-} = require("./controller/students/update.student.controller");
-const {
-  deteteStudent,
-} = require("./controller/students/delete.student.controller");
+} from "./controller/students/get.students.controller";
+import { updateStudent } from "./controller/students/update.student.controller";
+import { deteteStudent } from "./controller/students/delete.student.controller";
 
 router.get("/", getStudents);
 router.get("/detail/:id", getStudent);
 router.put("/update/:id", updateStudent);
 router.delete("/delete/:id", deteteStudent);
 
-module.exports = router;
+export default router;

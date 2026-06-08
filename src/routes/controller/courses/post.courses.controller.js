@@ -1,5 +1,5 @@
-const { Course, Teacher } = require("../../../db.js");
-const { getCategoryId, getCategoryNames } = require("../getCategoryId");
+import { Course, Teacher } from "../../../db.js";
+import { getCategoryId, getCategoryNames } from "../getCategoryId.js";
 
 const postCourses = async (req, res) => {
   //*email is of the teacher, category must be an array
@@ -40,6 +40,4 @@ const postCourses = async (req, res) => {
   }
 };
 
-module.exports = {
-  postCourses,
-};
+export { postCourses, };

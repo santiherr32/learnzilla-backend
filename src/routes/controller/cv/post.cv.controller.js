@@ -1,4 +1,4 @@
-const { Cv, Teacher } = require("../../../db");
+import { Cv, Teacher } from "../../../db.js";
 
 const postCv = async (req, res) => {
   const { teacherId, urlCv } = req.body;
@@ -17,6 +17,4 @@ const postCv = async (req, res) => {
   }
 };
 
-module.exports = {
-  postCv,
-};
+export { postCv, };

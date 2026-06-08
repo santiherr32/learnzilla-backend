@@ -1,4 +1,4 @@
-const { Category } = require("../../db.js");
+import { Category } from "../../db.js";
 
 //Esta función busca las recibe una o más categorías y va a la base de datos a buscar sus id
 
@@ -34,4 +34,4 @@ async function getCategoryNames(arrayId) {
   return categories;
 }
 
-module.exports = { getCategoryId, getCategoryNames };
+export { getCategoryId, getCategoryNames };

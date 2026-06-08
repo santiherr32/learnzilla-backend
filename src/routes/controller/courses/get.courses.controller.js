@@ -1,12 +1,12 @@
-const { Course } = require("../../../db.js");
+import { Course } from "../../../db.js";
 
-const { filterCategory } = require("../middleware");
-const { getCoursesByQuery } = require("./getCoursesByQuery");
-const {
+import { filterCategory } from "../middleware.js";
+import { getCoursesByQuery } from "./getCoursesByQuery.js";
+import {
   getAllDataCourses,
   getAllDataCoursesOfOneTeacher,
-} = require("./getAllDataCourses");
-const { getInfoCourse } = require("./getInfoCourse");
+} from "./getAllDataCourses.js";
+import { getInfoCourse } from "./getInfoCourse.js";
 
 const getAllCourses = async (req, res) => {
   try {
@@ -76,8 +76,4 @@ const getCoursesTeacher = async (req, res) => {
 //   }
 // };
 
-module.exports = {
-  getCourses,
-  getCourseDetail,
-  getCoursesTeacher,
-};
+export { getCourses, getCourseDetail, getCoursesTeacher };

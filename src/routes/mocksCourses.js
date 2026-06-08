@@ -1,6 +1,6 @@
-const { Router } = require("express");
+import { Router } from "express";
 const router = Router();
-const { courseMocks } = require("./mocks/mocksDataCourses.js");
+import { courseMocks } from "./mocks/mocksDataCourses.js";
 
 router.get("/", (req, res) => {
   res.status(200).send(courseMocks);
@@ -16,4 +16,4 @@ router.get("/:id", (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

@@ -1,5 +1,5 @@
-const server = require("../src/app.js");
-const { conn } = require("../src/db.js");
+import server from "../src/app.js";
+import { conn } from "../src/db.js";
 
 // Test the connection with detailed error logging
 (async () => {
@@ -14,4 +14,4 @@ const { conn } = require("../src/db.js");
   }
 })();
 
-module.exports = server;
+export default server;

@@ -27,4 +27,4 @@ function paginatedResults(array) {
   };
 }
 
-module.exports = { paginatedResults };
+export { paginatedResults };

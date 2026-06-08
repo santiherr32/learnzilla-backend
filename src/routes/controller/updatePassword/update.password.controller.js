@@ -4,11 +4,6 @@ import { randomBytes, pbkdf2 } from "crypto";
 import { Student, Teacher } from "../../../db";
 import { generateHashedPassword } from "../utils/PasswordHashing";
 
-import { promisify } from "util";
-
-const randomBytesAsync = promisify(randomBytes);
-const pbkdf2Async = promisify(pbkdf2);
-
 const updatePassword = async (req, res) => {
   const { email, password } = req.body;
   try {

@@ -1,13 +1,13 @@
-const { Router } = require("express");
+import { Router } from "express";
 const router = Router();
-const { postUser } = require("./controller/register/postUser");
-const cors = require("cors");
-const bodyParser = require("body-parser");
+import { postUser } from "./controller/register/postUser";
+import cors from "cors";
+import { json, urlencoded } from "body-parser";
 
-router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({ extended: true }));
+router.use(json());
+router.use(urlencoded({ extended: true }));
 router.use(cors());
 
 router.post("/", postUser);
 
-module.exports = router;
+export default router;

@@ -1,12 +1,13 @@
-const { Router } = require("express");
-const router = Router();
-const {
+import { Router } from "express";
+import {
   upload,
   uploadFiles,
   homePage,
-} = require("./controller/upload/files.controller");
+} from "./controller/upload/files.controller.js";
+
+const router = Router();
 
 router.get("/", homePage);
 router.post("/files", upload.single("file"), uploadFiles);
 
-module.exports = router;
+export default router;

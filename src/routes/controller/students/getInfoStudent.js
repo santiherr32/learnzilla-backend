@@ -1,4 +1,4 @@
-const { Student, Course } = require("../../../db");
+import { Student, Course } from "../../../db";
 
 const getInfoStudent = async (id) => {
   try {
@@ -40,6 +40,6 @@ const getInfoStudent = async (id) => {
   }
 };
 
-module.exports = {
+export default {
   getInfoStudent,
 };

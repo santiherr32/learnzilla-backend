@@ -1,5 +1,4 @@
-const crypto = require("crypto");
-const {
+import {
   Student,
   Teacher,
   Course,
@@ -7,7 +6,11 @@ const {
   Video,
   Category,
   Datamaker,
-} = require("../../db");
+} from "../../db.js";
+import { generateHashedPassword } from "../../utils/PasswordHashing";
+import { courseMocks, videos, imagenes } from "./mocksDataCourses";
+import { getCategoryId } from "../controller/getCategoryId";
+
 const {
   BYTES,
   BASE,
@@ -16,11 +19,6 @@ const {
   ENCRYPT_ALGORITHM,
   FAKE_PASSWORD,
 } = process.env;
-import { generateHashedPassword } from "../../utils/PasswordHashing.js";
-
-const { courseMocks, videos, imagenes } = require("./mocksDataCourses");
-
-const { getCategoryId } = require("../controller/getCategoryId");
 
 //función que retorna un número aleatorio entero entre 1 y 5
 const randomNumber = () => {
@@ -241,6 +239,4 @@ const dataMaker = async (req, res) => {
   }
 };
 
-module.exports = {
-  dataMaker,
-};
+export default dataMaker;

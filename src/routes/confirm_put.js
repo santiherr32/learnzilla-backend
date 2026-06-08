@@ -3,7 +3,7 @@ const router = express.Router();
 import { Student, Teacher } from "../db";
 import cors from "cors";
 import { json, urlencoded } from "body-parser";
-import { generateHashedPassword } from "../utils/passwordUtils";
+import { generateHashedPassword } from "../routes/utils/PasswordHashing";
 router.use(json());
 router.use(urlencoded({ extended: true }));
 router.use(cors());
@@ -70,6 +70,7 @@ router.post("/forgotpassword", async (req, res) => {
 
     const verifyEmailTeacher = await Teacher.findOne({ where: { email } });
     if (verifyEmailTeacher) {
+      const { newPassword, newSalt } = await generateHashedPassword(password);
       await Teacher.update(
         {
           password: newPassword,

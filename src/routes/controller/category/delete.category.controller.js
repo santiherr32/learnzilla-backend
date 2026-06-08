@@ -1,4 +1,4 @@
-const { Category } = require("../../../db.js");
+import { Category } from "../../../db.js";
 
 const deleteCategory = async (req, res) => {
   const { id } = req.params;
@@ -26,6 +26,4 @@ const deleteCategory = async (req, res) => {
   }
 };
 
-module.exports = {
-  deleteCategory,
-};
+export { deleteCategory, };
