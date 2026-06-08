@@ -1,16 +1,13 @@
 const crypto = require("crypto");
 const {
-  Admin,
   Student,
   Teacher,
   Course,
   Review,
   Video,
-  Records,
   Category,
-  Datamaker
+  Datamaker,
 } = require("../../db");
-require("dotenv").config();
 const {
   BYTES,
   BASE,
@@ -19,6 +16,7 @@ const {
   ENCRYPT_ALGORITHM,
   FAKE_PASSWORD,
 } = process.env;
+import { generateHashedPassword } from "../../utils/PasswordHashing.js";
 
 const { courseMocks, videos, imagenes } = require("./mocksDataCourses");
 
@@ -60,7 +58,7 @@ const randomPrice = () => {
 
 const categories = uniqueCategories(courseMocks);
 
-const categoyMaker = async () => {
+const categoryMaker = async () => {
   for (const category of categories) {
     //Recorre el array de categorias
     await Category.findOrCreate({
@@ -74,29 +72,17 @@ const categoyMaker = async () => {
 const teacherMaker = async () => {
   const password = FAKE_PASSWORD;
   try {
-    crypto.randomBytes(parseInt(BYTES), (error, salt) => {
-      const newSalt = salt.toString(BASE);
-      crypto.pbkdf2(
-        password,
-        newSalt,
-        parseInt(ITERATIONS), //iteraciones para encriptar
-        parseInt(LONG_ENCRYPTION), //longitud de la contraseña encriptada
-        ENCRYPT_ALGORITHM, //algoritmo de encriptación
-        async (error, key) => {
-          const encryptedPassword = key.toString(BASE);
-          await Teacher.create({
-            name: "TeacherMaker",
-            lastName: "BulkCreate",
-            email: "makerprofesor@email.com",
-            avatar:
-              "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200",
-            salt: newSalt,
-            password: encryptedPassword,
-            authorization: false,
-            role: "profesor",
-          });
-        }
-      );
+    const { newPassword, newSalt } = await generateHashedPassword(password);
+    await Teacher.create({
+      name: "TeacherMaker",
+      lastName: "BulkCreate",
+      email: "makerprofesor@email.com",
+      avatar:
+        "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200",
+      salt: newSalt,
+      password: newPassword,
+      authorization: false,
+      role: "profesor",
     });
     console.log("Teacher creado con éxito");
   } catch (error) {
@@ -127,29 +113,17 @@ const teacherMaker2 = async () => {
 const StudentMaker = async () => {
   const password = FAKE_PASSWORD;
   try {
-    crypto.randomBytes(parseInt(BYTES), (error, salt) => {
-      const newSalt = salt.toString(BASE);
-      crypto.pbkdf2(
-        password,
-        newSalt,
-        parseInt(ITERATIONS), //iteraciones para encriptar
-        parseInt(LONG_ENCRYPTION), //longitud de la contraseña encriptada
-        ENCRYPT_ALGORITHM, //algoritmo de encriptación
-        async (error, key) => {
-          const encryptedPassword = key.toString(BASE);
-          await Student.create({
-            name: "StudentMaker",
-            lastName: "BulkCreate",
-            email: "makerstudent@email.com",
-            avatar:
-              "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200",
-            salt: newSalt,
-            password: encryptedPassword,
-            authorization: false,
-            role: "alumno",
-          });
-        }
-      );
+    const { newPassword, newSalt } = await generateHashedPassword(password);
+    await Student.create({
+      name: "StudentMaker",
+      lastName: "BulkCreate",
+      email: "makerstudent@email.com",
+      avatar:
+        "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200",
+      salt: newSalt,
+      password: newPassword,
+      authorization: false,
+      role: "alumno",
     });
     console.log("Student creado con éxito");
   } catch (error) {
@@ -246,9 +220,12 @@ const buyMaker = async (studentId) => {
 const dataMaker = async (req, res) => {
   try {
     const data = await Datamaker.findAll({});
-    if (data.length > 0) return res.status(400).send({ message: "Ya se ha creado data anteriormente" });
-    Datamaker.create({ called: true })
-    await categoyMaker();
+    if (data.length > 0)
+      return res
+        .status(400)
+        .send({ message: "Ya se ha creado data anteriormente" });
+    Datamaker.create({ called: true });
+    await categoryMaker();
     await teacherMaker();
     const teacherId = await teacherMaker2();
     await courseMaker(teacherId);

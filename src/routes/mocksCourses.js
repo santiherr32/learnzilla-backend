@@ -8,7 +8,7 @@ router.get("/", (req, res) => {
 
 router.get("/:id", (req, res) => {
   const { id } = req.params;
-  const course = courseMocks.find((course) => course.id === parseInt(id));
+  const course = courseMocks.find((course) => course.id === parseInt(id, 10));
   if (course) {
     res.status(200).send(course);
   } else {

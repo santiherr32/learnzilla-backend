@@ -1,5 +1,5 @@
 import express from "express";
-const router = express().Router();
+const router = express.Router();
 import { Student, Teacher } from "../db";
 import cors from "cors";
 import { json, urlencoded } from "body-parser";
@@ -23,7 +23,7 @@ router.put("/confirm", async (req, res) => {
           },
         }
       );
-      res.send("Authorization=true!");
+      return res.send("Authorization=true!");
     }
     const verifyEmailTeacher = await Teacher.findOne({ where: { email } });
     if (verifyEmailTeacher) {
@@ -37,12 +37,12 @@ router.put("/confirm", async (req, res) => {
           },
         }
       );
-      res.send("Authorization=true!");
+      return res.send("Authorization=true!");
     } else {
-      res.send("Algo no funcionó bien");
+      return res.send("Algo no funcionó bien");
     }
   } catch (error) {
-    res.sendStatus(500).send("No pudo confirmarse");
+    return res.sendStatus(500).send("No pudo confirmarse");
   }
 });
 
@@ -50,7 +50,7 @@ router.post("/forgotpassword", async (req, res) => {
   const { email, password } = req.body;
   console.log(password, email);
   try {
-    let verifyEmailStudent = await Student.findOne({ where: { email } });
+    const verifyEmailStudent = await Student.findOne({ where: { email } });
     if (verifyEmailStudent) {
       const { newPassword, newSalt } = await generateHashedPassword(password);
 
@@ -66,11 +66,9 @@ router.post("/forgotpassword", async (req, res) => {
         }
       );
       return res.send({ message: "Contraseña cambiada" });
-    } else {
-      return res.status(400).send("Email incorrecto");
     }
 
-    let verifyEmailTeacher = await Teacher.findOne({ where: { email } });
+    const verifyEmailTeacher = await Teacher.findOne({ where: { email } });
     if (verifyEmailTeacher) {
       await Teacher.update(
         {
@@ -84,9 +82,9 @@ router.post("/forgotpassword", async (req, res) => {
         }
       );
       return res.send("Contraseña cambiada");
-    } else {
-      return res.status(400).send("Email incorrecto");
     }
+
+    return res.status(400).send("Email incorrecto");
   } catch (error) {
     return res.sendStatus(500).send(error);
   }
