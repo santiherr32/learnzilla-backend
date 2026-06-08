@@ -36,10 +36,14 @@ const postUser = async (req, res) => {
         "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200";
 
     //Verificamos si alguno e los email está ya en la base de datos
-    const verifyEmailStudent = await Student.findOne({ where: { email } });
-    const verifyEmailTeacher = await Teacher.findOne({ where: { email } });
-    const verifyEmailAdmin = await Admin.findOne({ where: { email } });
-    if (verifyEmailStudent || verifyEmailTeacher || verifyEmailAdmin) {
+    const [existingStudent, existingTeacher, existingAdmin] = await Promise.all(
+      [
+        Student.findOne({ where: { email } }),
+        Teacher.findOne({ where: { email } }),
+        Admin.findOne({ where: { email } }),
+      ]
+    );
+    if (existingStudent || existingTeacher || existingAdmin) {
       return res.status(404).send({ message: "El correo ya esta registrado" });
     }
 
