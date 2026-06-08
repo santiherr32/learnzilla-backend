@@ -3,16 +3,7 @@ const router = express().Router();
 import { Student, Teacher } from "../db";
 import cors from "cors";
 import { json, urlencoded } from "body-parser";
-import { randomBytes, pbkdf2 } from "crypto";
-const {
-  BYTES,
-  BASE,
-  ITERATIONS,
-  LONG_ENCRYPTION,
-  ENCRYPT_ALGORITHM,
-  EMAIL_USER,
-  PASSWORD_USER,
-} = process.env;
+import { generateHashedPassword } from "../utils/passwordUtils";
 router.use(json());
 router.use(urlencoded({ extended: true }));
 router.use(cors());
@@ -60,9 +51,6 @@ router.post("/forgotpassword", async (req, res) => {
   console.log(password, email);
   try {
     let verifyEmailStudent = await Student.findOne({ where: { email } });
-    if (!verifyEmailStudent) {
-      return res.sendStatus(404).send("El correo no esta registrado");
-    }
     if (verifyEmailStudent) {
       const { newPassword, newSalt } = await generateHashedPassword(password);
 
@@ -77,9 +65,9 @@ router.post("/forgotpassword", async (req, res) => {
           },
         }
       );
-      res.send({ message: "Contraseña cambiada" });
+      return res.send({ message: "Contraseña cambiada" });
     } else {
-      res.status(400).send("Email incorrecto");
+      return res.status(400).send("Email incorrecto");
     }
 
     let verifyEmailTeacher = await Teacher.findOne({ where: { email } });
@@ -95,12 +83,12 @@ router.post("/forgotpassword", async (req, res) => {
           },
         }
       );
-      res.send("Contraseña cambiada");
+      return res.send("Contraseña cambiada");
     } else {
-      res.status(400).send("Email incorrecto");
+      return res.status(400).send("Email incorrecto");
     }
   } catch (error) {
-    res.sendStatus(500).send(error);
+    return res.sendStatus(500).send(error);
   }
 });
 
@@ -116,7 +104,7 @@ router.post("/register", async (req, res) => {
     });
     res.json(user);
   } catch (error) {
-    res.send(`ERROR ${error}`);
+    return res.send(`ERROR ${error}`);
   }
 });
 router.get("/student", async (req, res) => {
@@ -124,7 +112,7 @@ router.get("/student", async (req, res) => {
     let student = await Student.findAll();
     res.send(student);
   } catch (error) {
-    res.sendStatus(500).send(error);
+    return res.sendStatus(500).send(error);
   }
 });
 
