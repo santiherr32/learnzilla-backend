@@ -11,14 +11,7 @@ import { generateHashedPassword } from "../../utils/PasswordHashing";
 import { courseMocks, videos, imagenes } from "./mocksDataCourses";
 import { getCategoryId } from "../controller/getCategoryId";
 
-const {
-  BYTES,
-  BASE,
-  ITERATIONS,
-  LONG_ENCRYPTION,
-  ENCRYPT_ALGORITHM,
-  FAKE_PASSWORD,
-} = process.env;
+const { FAKE_PASSWORD } = process.env;
 
 //función que retorna un número aleatorio entero entre 1 y 5
 const randomNumber = () => {
@@ -194,7 +187,7 @@ const courseMaker = async (teacherId) => {
       });
       const categoryID = await getCategoryId(course.category); //Busca el id de las categorias
       // console.log('category id in post course:',categoryID);
-      courseCreated.addCategory(categoryID);
+      await courseCreated.addCategory(categoryID);
     }
     console.log("Cusos creados con éxito");
   } catch (error) {
@@ -211,7 +204,7 @@ const buyMaker = async (studentId) => {
     },
   });
   for (const course of courses) {
-    student.addCourse(course.id);
+    await student.addCourse(course.id);
   }
 };
 
@@ -222,7 +215,7 @@ const dataMaker = async (req, res) => {
       return res
         .status(400)
         .send({ message: "Ya se ha creado data anteriormente" });
-    Datamaker.create({ called: true });
+    await Datamaker.create({ called: true });
     await categoryMaker();
     await teacherMaker();
     const teacherId = await teacherMaker2();
