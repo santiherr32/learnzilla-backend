@@ -17,7 +17,7 @@ let storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-const homePage = (req, res) => {
+const homePage = (req, res, next) => {
   return res.send("this is de the home page");
 };
 
@@ -26,7 +26,7 @@ const homePage = (req, res) => {
 //   return res.send(req.file);
 // });
 
-const uploadFiles = (req, res) => {
+const uploadFiles = (req, res, next) => {
   console.log(`Storage location is ${req.hostname}/${req.file.path}`);
   //   return res.send(req.file);
 };

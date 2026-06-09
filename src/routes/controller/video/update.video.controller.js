@@ -1,6 +1,6 @@
 import { Video } from "../../../db.js";
 
-const updateVideo = async (req, res) => {
+const updateVideo = async (req, res, next) => {
   const { id } = req.params;
   const { title, description, url, img } = req.body;
 
@@ -25,8 +25,9 @@ const updateVideo = async (req, res) => {
       .status(200)
       .send({ message: "El video se ha actualizado correctamente" });
   } catch (error) {
-    console.error(error);
-    res.status(404).send(error);
+    error.status = 404;
+    error.body = error;
+    next(error);
   }
 };
 

@@ -1,6 +1,6 @@
 import { Teacher } from "../../../db.js";
 
-const updateTeacher = async (req, res) => {
+const updateTeacher = async (req, res, next) => {
   const { id } = req.params;
   const { name, lastName, email, avatar } = req.body;
   try {
@@ -30,8 +30,9 @@ const updateTeacher = async (req, res) => {
     );
     res.status(200).send({ message: "Profesor Actualizado" });
   } catch (error) {
-    console.error(error);
-    res.status(404).send({ message: "Error al actualizar el profesor" });
+    error.status = 404;
+    error.body = { message: "Error al actualizar el profesor" };
+    next(error);
   }
 };
 

@@ -1,6 +1,6 @@
 import { Course, Video } from "../../../db";
 
-const postVideo = async (req, res) => {
+const postVideo = async (req, res, next) => {
   let { title, description, url, cursoId, img } = req.body;
   if (Array.isArray(cursoId)) {
     cursoId = cursoId[0];
@@ -25,8 +25,9 @@ const postVideo = async (req, res) => {
       videoId: video.id,
     });
   } catch (error) {
-    console.error(error);
-    res.status(404).send(error);
+    error.status = 404;
+    error.body = error;
+    next(error);
   }
 };
 

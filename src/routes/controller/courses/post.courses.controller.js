@@ -1,7 +1,7 @@
 import { Course, Teacher } from "../../../db.js";
 import { getCategoryId, getCategoryNames } from "../getCategoryId.js";
 
-const postCourses = async (req, res) => {
+const postCourses = async (req, res, next) => {
   //*email is of the teacher, category must be an array
   let { name, description, email, img, price, category, role } = req.body;
   if (!img) img = "https://placeimg.com/240/120/tech";
@@ -35,8 +35,9 @@ const postCourses = async (req, res) => {
       res.status(400).send({ message: "El curso ya existe" });
     }
   } catch (error) {
-    console.error(error);
-    res.status(404).send(error);
+    error.status = 404;
+    error.body = error;
+    next(error);
   }
 };
 

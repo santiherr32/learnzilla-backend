@@ -4,7 +4,7 @@ import { Student, Course, Order } from "../../../db.js";
 import Stripe from "stripe";
 const stripe = Stripe(STRIPE_KEY);
 
-const stripePay = async (req, res) => {
+const stripePay = async (req, res, next) => {
   const { email, token, orderId } = req.body;
 
   try {
@@ -58,12 +58,13 @@ const stripePay = async (req, res) => {
       return res.status(404).send({ message: "Ha ocurrido un error" });
     }
   } catch (error) {
-    console.log(error);
-    res.status(500).send(error);
+    error.status = 500;
+    error.body = error;
+    next(error);
   }
 };
 
-const generateOrder = async (req, res) => {
+const generateOrder = async (req, res, next) => {
   const { id, studentId, coursesId, totalAmount, status } = req.body;
 
   try {
@@ -91,8 +92,9 @@ const generateOrder = async (req, res) => {
       .status(200)
       .send({ message: "Orden generada con exito", orderId: order.id });
   } catch (error) {
-    console.log(error);
-    res.status(404).send(error);
+    error.status = 404;
+    error.body = error;
+    next(error);
   }
 };
 

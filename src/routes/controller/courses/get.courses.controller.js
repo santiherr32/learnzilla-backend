@@ -8,19 +8,20 @@ import {
 } from "./getAllDataCourses.js";
 import { getInfoCourse } from "./getInfoCourse.js";
 
-const getAllCourses = async (req, res) => {
+const getAllCourses = async (req, res, next) => {
   try {
     let getAllCourses = await getAllDataCourses(); //Busca todos los cursos
     // console.log("GET ALL COURSES", getAllCourses)
     res.json(getAllCourses); //Envía el array con todos los cursos
     // getInfoCourse(name)
   } catch (error) {
-    console.error(error);
-    res.status(404).send(error);
+    error.status = 404;
+    error.body = error;
+    next(error);
   }
 };
 
-const getCourses = async (req, res) => {
+const getCourses = async (req, res, next) => {
   const { category, order } = req.query;
   if (category === undefined && order === undefined) {
     getAllCourses(req, res);
@@ -29,7 +30,7 @@ const getCourses = async (req, res) => {
   }
 };
 
-const getCourseDetail = async (req, res) => {
+const getCourseDetail = async (req, res, next) => {
   //Obtiene el detalle de un curso
   const { id } = req.params;
   try {
@@ -42,26 +43,31 @@ const getCourseDetail = async (req, res) => {
         },
       });
     } catch (error) {
-      return res.status(404).send({ message: "Curso no encontrado" }); //Si no encuentra el curso, retorna un error
-    }
+    error.status = 404;
+    error.body = { message: "Curso no encontrado" };
+    next(error);
+  }
     const detail = await getInfoCourse(name.name); //Obtiene el detalle del curso
     if (!detail) {
       return res.status(404).send({ message: "Curso no encontrado" }); //Si no encuentra el curso, retorna un error
     }
     res.json(detail); //Envía el detalle del curso
   } catch (error) {
-    res.status(404).send(error);
+    error.status = 404;
+    error.body = error;
+    next(error);
   }
 };
 
-const getCoursesTeacher = async (req, res) => {
+const getCoursesTeacher = async (req, res, next) => {
   const { teacherId } = req.params;
   try {
     const courses = await getAllDataCoursesOfOneTeacher(teacherId);
     res.json(courses);
   } catch (error) {
-    console.error(error);
-    res.status(404).send(error);
+    error.status = 404;
+    error.body = error;
+    next(error);
   }
 };
 
@@ -72,8 +78,8 @@ const getCoursesTeacher = async (req, res) => {
 //     // console.log(courseById);
 //     return courseById;
 //   } catch (error) {
-//     console.log(error);
-//   }
+    next(error);
+  }
 // };
 
 export { getCourses, getCourseDetail, getCoursesTeacher };

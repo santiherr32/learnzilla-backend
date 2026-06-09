@@ -1,6 +1,6 @@
 import { Course } from "../../../db.js";
 
-const deleteCourse = async (req, res) => {
+const deleteCourse = async (req, res, next) => {
   const { id } = req.params;
   try {
     const course = await Course.findOne({
@@ -21,8 +21,9 @@ const deleteCourse = async (req, res) => {
       .status(200)
       .send({ message: "Curso eliminado con Éxito", course: course });
   } catch (error) {
-    console.log(error);
-    res.status(404).send(error);
+    error.status = 404;
+    error.body = error;
+    next(error);
   }
 };
 

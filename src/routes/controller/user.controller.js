@@ -4,7 +4,7 @@ import { Student } from "../../db.js";
 
 const clientId = CLIENT_ID;
 
-const loginGoogle = async (req, res) => {
+const loginGoogle = async (req, res, next) => {
   const { firstName, lastName, email, tokenId } = req.body;
   try {
     let student = await Student.findOne({
@@ -21,7 +21,8 @@ const loginGoogle = async (req, res) => {
     }
     res.send(student);
   } catch (err) {
-    res.send(err);
+    err.body = err;
+    next(err);
   }
 };
 

@@ -1,15 +1,17 @@
 import { Cv } from "../../../db.js";
 
-const getCvs = async (req, res) => {
+const getCvs = async (req, res, next) => {
   try {
     const cvs = await Cv.findAll();
     res.send(cvs);
   } catch (error) {
-    res.status(404).send(error);
+    error.status = 404;
+    error.body = error;
+    next(error);
   }
 };
 
-const getCv = async (req, res) => {
+const getCv = async (req, res, next) => {
   const { id } = req.params;
   try {
     const cv = await Cv.findByPk(id);
@@ -18,7 +20,9 @@ const getCv = async (req, res) => {
     }
     res.send(cv);
   } catch (error) {
-    res.status(404).send(error);
+    error.status = 404;
+    error.body = error;
+    next(error);
   }
 };
 

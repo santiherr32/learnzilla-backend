@@ -24,8 +24,9 @@ const postCategory = async (req, res, next) => {
     // const categoriesCreated = await Category.findAll(); //Busca todas las categorias
     res.status(200).send({ message: "Categorias creadas" });
   } catch (error) {
-    console.log(error);
-    res.status(404).send(error);
+    error.status = 404;
+    error.body = error;
+    next(error);
   }
 };
 

@@ -61,8 +61,7 @@ const getInfoCourse = async (name) => {
       meanReview: course.dataValues.meanReview || 0,
     };
   } catch (err) {
-    console.error("Error en getInfoCourse:", err.message);
-    throw new Error("Error al obtener información del curso");
+    next(err);
   }
 };
 

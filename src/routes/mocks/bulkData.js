@@ -77,7 +77,7 @@ const teacherMaker = async () => {
     });
     console.log("Teacher creado con éxito");
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
@@ -97,7 +97,7 @@ const teacherMaker2 = async () => {
     console.log("Teacher 2 creado con éxito");
     return teacher.id;
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
@@ -118,7 +118,7 @@ const StudentMaker = async () => {
     });
     console.log("Student creado con éxito");
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
@@ -138,7 +138,7 @@ const studentMaker2 = async () => {
     console.log("Teacher 2 creado con éxito");
     return student.id;
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
@@ -191,7 +191,7 @@ const courseMaker = async (teacherId) => {
     }
     console.log("Cusos creados con éxito");
   } catch (error) {
-    console.log("Error al crear los cursos: ", error);
+    next(error);
   }
 };
 
@@ -208,7 +208,7 @@ const buyMaker = async (studentId) => {
   }
 };
 
-const dataMaker = async (req, res) => {
+const dataMaker = async (req, res, next) => {
   try {
     const data = await Datamaker.findAll({});
     if (data.length > 0)
@@ -227,8 +227,9 @@ const dataMaker = async (req, res) => {
     await buyMaker(studentId);
     res.status(200).send({ message: "Data creada" });
   } catch (error) {
-    console.log(error);
-    res.status(404).send(error);
+    error.status = 404;
+    error.body = error;
+    next(error);
   }
 };
 

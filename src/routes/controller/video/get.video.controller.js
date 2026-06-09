@@ -1,6 +1,6 @@
 import { Video } from "../../../db.js";
 
-const getAllVideos = async (req, res) => {
+const getAllVideos = async (req, res, next) => {
   try {
     const videos = await Video.findAll({
       where: {},
@@ -8,12 +8,13 @@ const getAllVideos = async (req, res) => {
     });
     res.status(200).send(videos);
   } catch (error) {
-    console.error(error);
-    res.status(404).send(error);
+    error.status = 404;
+    error.body = error;
+    next(error);
   }
 };
 
-const getVideoDetail = async (req, res) => {
+const getVideoDetail = async (req, res, next) => {
   const { id } = req.params;
   try {
     const video = await Video.findOne({
@@ -25,12 +26,13 @@ const getVideoDetail = async (req, res) => {
     }
     res.status(200).send(video);
   } catch (error) {
-    console.error(error);
-    res.status(404).send(error);
+    error.status = 404;
+    error.body = error;
+    next(error);
   }
 };
 
-const getCourseVideos = async (req, res) => {
+const getCourseVideos = async (req, res, next) => {
   const { courseId } = req.params;
   try {
     const videos = await Video.findAll({
@@ -42,8 +44,9 @@ const getCourseVideos = async (req, res) => {
     }
     res.status(200).send(videos);
   } catch (error) {
-    console.log(error);
-    res.status(404).send(error);
+    error.status = 404;
+    error.body = error;
+    next(error);
   }
 };
 

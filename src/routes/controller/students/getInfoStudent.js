@@ -35,8 +35,7 @@ const getInfoStudent = async (id) => {
     };
     return objStudetn;
   } catch (err) {
-    console.log("Error al obtener el estudiante");
-    console.log(err);
+    next(err);
   }
 };
 

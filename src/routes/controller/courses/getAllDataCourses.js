@@ -47,8 +47,7 @@ const getAllDataCourses = async () => {
     });
     return courses;
   } catch (error) {
-    console.error("Error en getAllDataCourses:", error.message);
-    throw new Error("No se pudieron obtener los cursos");
+    next(error);
   }
 };
 
@@ -70,8 +69,7 @@ const getAllDataCoursesOfOneTeacher = async (teacherId) => {
     return arrayAllCoursesInfo;
     // getInfoCourse(name)
   } catch (error) {
-    console.error(error);
-    return { message: "Error al obtener los cursos" };
+    next(error);
   }
 };
 

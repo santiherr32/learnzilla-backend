@@ -42,7 +42,8 @@ router.put("/confirm", async (req, res) => {
       return res.send("Algo no funcionó bien");
     }
   } catch (error) {
-    return res.sendStatus(500).send("No pudo confirmarse");
+    error.body = "No pudo confirmarse";
+    next(error);
   }
 });
 
@@ -87,7 +88,8 @@ router.post("/forgotpassword", async (req, res) => {
 
     return res.status(400).send("Email incorrecto");
   } catch (error) {
-    return res.sendStatus(500).send(error);
+    error.body = error;
+    next(error);
   }
 });
 
@@ -103,7 +105,8 @@ router.post("/register", async (req, res) => {
     });
     res.json(user);
   } catch (error) {
-    return res.send(`ERROR ${error}`);
+    error.body = `ERROR ${error}`;
+    next(error);
   }
 });
 router.get("/student", async (req, res) => {
@@ -111,7 +114,8 @@ router.get("/student", async (req, res) => {
     let student = await Student.findAll();
     res.send(student);
   } catch (error) {
-    return res.sendStatus(500).send(error);
+    error.body = error;
+    next(error);
   }
 });
 

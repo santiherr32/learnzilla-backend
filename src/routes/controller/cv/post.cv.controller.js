@@ -1,6 +1,6 @@
 import { Cv, Teacher } from "../../../db.js";
 
-const postCv = async (req, res) => {
+const postCv = async (req, res, next) => {
   const { teacherId, urlCv } = req.body;
   try {
     const teacher = await Teacher.findByPk(teacherId);
@@ -13,7 +13,9 @@ const postCv = async (req, res) => {
     });
     res.send({ message: "El cv se ha creado correctamente", cvId: cv.id });
   } catch (error) {
-    res.status(404).send(error);
+    error.status = 404;
+    error.body = error;
+    next(error);
   }
 };
 

@@ -13,8 +13,7 @@ const getAllStudents = async () => {
     }
     return arrayStudents;
   } catch (error) {
-    console.log("Error al obtener los estudiantes");
-    console.log(error);
+    next(error);
   }
 };
 

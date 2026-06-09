@@ -4,7 +4,7 @@ import { randomBytes, pbkdf2 } from "crypto";
 import { Student, Teacher } from "../../../db";
 import { generateHashedPassword } from "../utils/PasswordHashing";
 
-const updatePassword = async (req, res) => {
+const updatePassword = async (req, res, next) => {
   const { email, password } = req.body;
   try {
     const student = await Student.findOne({ where: { email } });
@@ -51,8 +51,9 @@ const updatePassword = async (req, res) => {
 
     return res.status(404).send({ message: "Correo Inválido" });
   } catch (err) {
-    console.log(err);
-    res.status(404).send({ message: "Error al actualizar la contraseña" });
+    err.status = 404;
+    err.body = { message: "Error al actualizar la contraseña" };
+    next(err);
   }
 };
 

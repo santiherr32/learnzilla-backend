@@ -1,6 +1,6 @@
 import { Category } from "../../../db.js";
 
-const deleteCategory = async (req, res) => {
+const deleteCategory = async (req, res, next) => {
   const { id } = req.params;
   try {
     const category = await Category.findOne({
@@ -22,7 +22,9 @@ const deleteCategory = async (req, res) => {
       .status(200)
       .send({ message: "Categoria eliminada", category: category.name }); //devolvemos la categoria eliminada
   } catch (error) {
-    res.status(404).send(error);
+    error.status = 404;
+    error.body = error;
+    next(error);
   }
 };
 

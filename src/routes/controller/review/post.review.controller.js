@@ -1,6 +1,6 @@
 import { Course, Student, Review } from "../../../db.js";
 
-const postReview = async (req, res) => {
+const postReview = async (req, res, next) => {
   const { courseId, studentId, score } = req.body;
   try {
     const FKCourse = await Course.findOne({
@@ -39,13 +39,17 @@ const postReview = async (req, res) => {
           flag: review.flag,
         });
       } catch (error) {
-        res.status(404).send(error);
-      }
+    error.status = 404;
+    error.body = error;
+    next(error);
+  }
     } else {
       res.status(404).send({ message: "Ya has calificado este curso" });
     }
   } catch (error) {
-    res.status(404).send(error);
+    error.status = 404;
+    error.body = error;
+    next(error);
   }
 };
 

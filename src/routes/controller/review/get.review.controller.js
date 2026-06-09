@@ -1,7 +1,7 @@
 import { Review } from "../../../db.js";
 import { Op } from "sequelize";
 
-const getStudentReview = async (req, res) => {
+const getStudentReview = async (req, res, next) => {
   const { studentId, courseId } = req.query;
   console.log({ studentId, courseId });
   try {
@@ -15,11 +15,12 @@ const getStudentReview = async (req, res) => {
     }
     res.status(200).send({ flag: true });
   } catch (error) {
-    req.status(404).send(error);
+    error.body = error;
+    next(error);
   }
 };
 
-const getReview = async (req, res) => {
+const getReview = async (req, res, next) => {
   try {
     const review = await Review.findAll();
     if (!review) {
@@ -27,11 +28,13 @@ const getReview = async (req, res) => {
     }
     res.status(200).send(review);
   } catch (error) {
-    res.status(404).send(error);
+    error.status = 404;
+    error.body = error;
+    next(error);
   }
 };
 
-const getReviewById = async (req, res) => {
+const getReviewById = async (req, res, next) => {
   const { id } = req.params;
   try {
     const review = await Review.findAll({
@@ -44,7 +47,9 @@ const getReviewById = async (req, res) => {
     }
     res.status(200).send(review);
   } catch (error) {
-    res.status(404).send(error);
+    error.status = 404;
+    error.body = error;
+    next(error);
   }
 };
 

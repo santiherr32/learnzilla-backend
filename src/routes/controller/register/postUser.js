@@ -26,7 +26,7 @@ const sendConfirmationEmail = async (email, name) => {
   Transport.close();
 };
 
-const postUser = async (req, res) => {
+const postUser = async (req, res, next) => {
   let { name, lastName, email, password, role, avatar } = req.body; //recibimos por body
   try {
     let user; //creamos una variable para guardar el usuario
@@ -96,8 +96,9 @@ const postUser = async (req, res) => {
       .status(200)
       .send({ message: "Usuario Registrado con Éxito", userId: user.id });
   } catch (error) {
-    console.error(error);
-    res.status(404).send(error);
+    error.status = 404;
+    error.body = error;
+    next(error);
   }
 };
 

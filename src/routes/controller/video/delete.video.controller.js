@@ -1,6 +1,6 @@
 import { Video } from "../../../db.js";
 
-const deleteVideo = async (req, res) => {
+const deleteVideo = async (req, res, next) => {
   const { id } = req.params;
   try {
     const video = await Video.findOne({
@@ -17,8 +17,9 @@ const deleteVideo = async (req, res) => {
       .status(200)
       .send({ message: "El video se ha eliminado correctamente", video });
   } catch (error) {
-    console.log(error);
-    res.status(404).send(error);
+    error.status = 404;
+    error.body = error;
+    next(error);
   }
 };
 

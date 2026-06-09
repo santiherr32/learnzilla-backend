@@ -1,6 +1,6 @@
 import { Admin } from "../../../db.js";
 
-const updateAdmin = async (req, res) => {
+const updateAdmin = async (req, res, next) => {
   const { id } = req.params;
   const { name, lastName, email, avatar } = req.body;
   try {
@@ -30,8 +30,9 @@ const updateAdmin = async (req, res) => {
     );
     res.status(200).send({ message: "Administrador Actualizado" });
   } catch (error) {
-    console.error(error);
-    res.status(404).send({ message: "Error al actualizar el administrador" });
+    error.status = 404;
+    error.body = { message: "Error al actualizar el administrador" };
+    next(error);
   }
 };
 

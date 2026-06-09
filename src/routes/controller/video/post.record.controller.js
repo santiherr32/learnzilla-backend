@@ -1,6 +1,6 @@
 import { Records } from "../../../db.js";
 
-const postRecord = async (req, res) => {
+const postRecord = async (req, res, next) => {
   try {
     const { idVideo, idStudent } = req.query;
     //*If exists a query parameter add the record to stdent_record table
@@ -10,8 +10,9 @@ const postRecord = async (req, res) => {
     });
     res.status(200).send(newRecord);
   } catch (error) {
-    console.error(error);
-    res.status(404).send(error);
+    error.status = 404;
+    error.body = error;
+    next(error);
   }
 };
 

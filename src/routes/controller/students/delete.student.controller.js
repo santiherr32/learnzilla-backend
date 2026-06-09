@@ -1,6 +1,6 @@
 import { Student } from "../../../db.js";
 
-const deteteStudent = async (req, res) => {
+const deteteStudent = async (req, res, next) => {
   const { id } = req.params;
   try {
     const student = await Student.findOne({
@@ -21,8 +21,9 @@ const deteteStudent = async (req, res) => {
     });
     res.status(200).send({ message: "Estudiante Eliminado", student }); //enviamos el estudiante eliminado
   } catch (error) {
-    console.error(error);
-    res.status(404).send({ message: "Error al eliminar el estudiante" });
+    error.status = 404;
+    error.body = { message: "Error al eliminar el estudiante" };
+    next(error);
   }
 };
 

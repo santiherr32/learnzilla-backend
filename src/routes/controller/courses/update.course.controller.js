@@ -1,7 +1,7 @@
 import { Course, Category } from "../../../db.js";
 import { getInfoCourse } from "./getInfoCourse.js";
 import { getCategoryId } from "../getCategoryId.js";
-const updateCourse = async (req, res) => {
+const updateCourse = async (req, res, next) => {
   const { id } = req.params;
   const { name, description, price, img } = req.body;
 
@@ -29,8 +29,9 @@ const updateCourse = async (req, res) => {
     );
     res.status(200).send({ message: "Curso actualizado" });
   } catch (error) {
-    console.log(error);
-    res.status(404).send(error);
+    error.status = 404;
+    error.body = error;
+    next(error);
   }
 };
 

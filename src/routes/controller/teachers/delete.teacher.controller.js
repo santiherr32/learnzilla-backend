@@ -1,6 +1,6 @@
 import { Teacher } from "../../../db.js";
 
-const deteteTeacher = async (req, res) => {
+const deteteTeacher = async (req, res, next) => {
   const { id } = req.params;
   try {
     const teacher = await Teacher.findOne({
@@ -20,8 +20,9 @@ const deteteTeacher = async (req, res) => {
     });
     res.status(200).send({ message: "Profesor Eliminado", teacher }); //enviamos el profesor eliminado
   } catch (error) {
-    console.error(error);
-    res.status(404).send({ message: "Error al eliminar el profesor" });
+    error.status = 404;
+    error.body = { message: "Error al eliminar el profesor" };
+    next(error);
   }
 };
 
