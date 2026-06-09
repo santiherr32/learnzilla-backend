@@ -50,9 +50,7 @@ const getCoursesByQuery = async (req, res, category, order) => {
     });
   }
   if (category) {
-    getAllCourses = await getAllCourses.filter((e) =>
-      e.category.includes(category)
-    );
+    getAllCourses = getAllCourses.filter((e) => e.category.includes(category));
     // console.log("filtro o no filtro? caralhoooo")
   }
 
@@ -60,4 +58,4 @@ const getCoursesByQuery = async (req, res, category, order) => {
   res.json(getAllCourses);
 };
 
-export { getCoursesByQuery, };
+export { getCoursesByQuery };

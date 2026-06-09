@@ -42,7 +42,7 @@ const stripePay = async (req, res) => {
     if (charge) {
       //Si se creo el cargo
       // return res.status(200).send(charge);
-      student.addCourse(order.arrayCoursesId); //Agrega los cursos al estudiante
+      await student.addCourse(order.arrayCoursesId); //Agrega los cursos al estudiante
       await Order.update(
         {
           status: true,

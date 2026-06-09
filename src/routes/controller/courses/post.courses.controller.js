@@ -29,7 +29,7 @@ const postCourses = async (req, res) => {
       });
       const categoryID = await getCategoryId(category); //Busca el id de las categorias
       // console.log('category id in post course:',categoryID);
-      courseCreated.addCategory(categoryID); //Agrega las categorias al curso
+      await courseCreated.addCategory(categoryID); //Agrega las categorias al curso
       res.status(200).send({ message: "El curso se ha creado correctamente" });
     } else {
       res.status(400).send({ message: "El curso ya existe" });
@@ -40,4 +40,4 @@ const postCourses = async (req, res) => {
   }
 };
 
-export { postCourses, };
+export { postCourses };
