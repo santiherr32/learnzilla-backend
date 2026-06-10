@@ -10,8 +10,6 @@ const postRecord = async (req, res, next) => {
     });
     res.status(200).send(newRecord);
   } catch (error) {
-    error.status = 404;
-    error.body = error;
     next(error);
   }
 };

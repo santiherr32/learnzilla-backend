@@ -22,8 +22,6 @@ const deleteCategory = async (req, res, next) => {
       .status(200)
       .send({ message: "Categoria eliminada", category: category.name }); //devolvemos la categoria eliminada
   } catch (error) {
-    error.status = 404;
-    error.body = error;
     next(error);
   }
 };

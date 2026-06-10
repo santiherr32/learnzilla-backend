@@ -7,8 +7,6 @@ const getAdmins = async (req, res, next) => {
     });
     res.status(200).json(admins);
   } catch (err) {
-    err.status = 404;
-    err.body = { message: "Error al obtener los administradores" };
     next(err);
   }
 };
@@ -27,8 +25,6 @@ const getAdmin = async (req, res, next) => {
     }
     res.status(200).json(admin);
   } catch (err) {
-    err.status = 404;
-    err.body = { message: "Error al obtener el adminstrador" };
     next(err);
   }
 };

@@ -7,8 +7,6 @@ const getTeachers = async (req, res, next) => {
     });
     res.status(200).json(teachers);
   } catch (err) {
-    err.status = 404;
-    err.body = { message: "Error al obtener los profesores" };
     next(err);
   }
 };
@@ -27,8 +25,6 @@ const getTeacher = async (req, res, next) => {
     }
     res.status(200).json(teacher);
   } catch (err) {
-    err.status = 404;
-    err.body = { message: "Error al obtener el profesor" };
     next(err);
   }
 };

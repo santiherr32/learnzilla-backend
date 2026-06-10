@@ -21,7 +21,6 @@ const loginGoogle = async (req, res, next) => {
     }
     res.send(student);
   } catch (err) {
-    err.body = err;
     next(err);
   }
 };

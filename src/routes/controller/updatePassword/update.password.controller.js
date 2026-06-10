@@ -51,8 +51,6 @@ const updatePassword = async (req, res, next) => {
 
     return res.status(404).send({ message: "Correo Inválido" });
   } catch (err) {
-    err.status = 404;
-    err.body = { message: "Error al actualizar la contraseña" };
     next(err);
   }
 };

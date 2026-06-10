@@ -25,8 +25,6 @@ const postVideo = async (req, res, next) => {
       videoId: video.id,
     });
   } catch (error) {
-    error.status = 404;
-    error.body = error;
     next(error);
   }
 };

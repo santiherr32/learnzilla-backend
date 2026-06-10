@@ -15,7 +15,6 @@ const getStudentReview = async (req, res, next) => {
     }
     res.status(200).send({ flag: true });
   } catch (error) {
-    error.body = error;
     next(error);
   }
 };
@@ -28,8 +27,6 @@ const getReview = async (req, res, next) => {
     }
     res.status(200).send(review);
   } catch (error) {
-    error.status = 404;
-    error.body = error;
     next(error);
   }
 };
@@ -47,8 +44,6 @@ const getReviewById = async (req, res, next) => {
     }
     res.status(200).send(review);
   } catch (error) {
-    error.status = 404;
-    error.body = error;
     next(error);
   }
 };

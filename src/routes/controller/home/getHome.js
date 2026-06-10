@@ -14,8 +14,6 @@ const getLastFiveCourses = async (req, res, next) => {
     if (uniqueID.length > 5) uniqueID.length = 5; //aca trunco el arreglo para que solo devuelva los primeros 5 registros
     res.status(200).send(uniqueID);
   } catch (error) {
-    error.status = 404;
-    error.body = error;
     next(error);
   }
 };

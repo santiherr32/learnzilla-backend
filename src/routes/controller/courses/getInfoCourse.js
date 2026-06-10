@@ -61,7 +61,7 @@ const getInfoCourse = async (name) => {
       meanReview: course.dataValues.meanReview || 0,
     };
   } catch (err) {
-    next(err);
+    throw err;
   }
 };
 

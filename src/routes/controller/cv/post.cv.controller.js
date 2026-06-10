@@ -13,8 +13,6 @@ const postCv = async (req, res, next) => {
     });
     res.send({ message: "El cv se ha creado correctamente", cvId: cv.id });
   } catch (error) {
-    error.status = 404;
-    error.body = error;
     next(error);
   }
 };

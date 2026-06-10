@@ -49,8 +49,6 @@ router.post("/", async (req, res, next) => {
 
     return res.status(404).send({ authorization: false });
   } catch (error) {
-    error.status = 404;
-    error.body = error;
     next(error);
   }
 });

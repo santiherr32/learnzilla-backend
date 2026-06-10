@@ -35,8 +35,6 @@ const postCourses = async (req, res, next) => {
       res.status(400).send({ message: "El curso ya existe" });
     }
   } catch (error) {
-    error.status = 404;
-    error.body = error;
     next(error);
   }
 };

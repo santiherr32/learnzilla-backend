@@ -13,7 +13,7 @@ const getAllStudents = async () => {
     }
     return arrayStudents;
   } catch (error) {
-    next(error);
+    throw error;
   }
 };
 

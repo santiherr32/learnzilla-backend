@@ -21,8 +21,6 @@ const deleteCourse = async (req, res, next) => {
       .status(200)
       .send({ message: "Curso eliminado con Éxito", course: course });
   } catch (error) {
-    error.status = 404;
-    error.body = error;
     next(error);
   }
 };

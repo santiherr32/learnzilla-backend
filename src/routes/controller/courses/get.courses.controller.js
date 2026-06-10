@@ -15,8 +15,6 @@ const getAllCourses = async (req, res, next) => {
     res.json(getAllCourses); //Envía el array con todos los cursos
     // getInfoCourse(name)
   } catch (error) {
-    error.status = 404;
-    error.body = error;
     next(error);
   }
 };
@@ -24,7 +22,7 @@ const getAllCourses = async (req, res, next) => {
 const getCourses = async (req, res, next) => {
   const { category, order } = req.query;
   if (category === undefined && order === undefined) {
-    getAllCourses(req, res);
+    getAllCourses(req, res, next);
   } else {
     getCoursesByQuery(req, res, category, order);
   }
@@ -43,18 +41,15 @@ const getCourseDetail = async (req, res, next) => {
         },
       });
     } catch (error) {
-    error.status = 404;
-    error.body = { message: "Curso no encontrado" };
-    next(error);
-  }
+      next(error);
+      return;
+    }
     const detail = await getInfoCourse(name.name); //Obtiene el detalle del curso
     if (!detail) {
       return res.status(404).send({ message: "Curso no encontrado" }); //Si no encuentra el curso, retorna un error
     }
     res.json(detail); //Envía el detalle del curso
   } catch (error) {
-    error.status = 404;
-    error.body = error;
     next(error);
   }
 };
@@ -65,21 +60,18 @@ const getCoursesTeacher = async (req, res, next) => {
     const courses = await getAllDataCoursesOfOneTeacher(teacherId);
     res.json(courses);
   } catch (error) {
-    error.status = 404;
-    error.body = error;
     next(error);
   }
 };
 
-//!no encontre quien llama a este metodo
 // const getCourseById = async (id) => {
 //   try {
 //     const courseById = await Course.findByPk(id.toUpperCase());
 //     // console.log(courseById);
 //     return courseById;
 //   } catch (error) {
-    next(error);
-  }
+//     throw error;
+//   }
 // };
 
 export { getCourses, getCourseDetail, getCoursesTeacher };

@@ -47,7 +47,7 @@ const getAllDataCourses = async () => {
     });
     return courses;
   } catch (error) {
-    next(error);
+    throw error;
   }
 };
 
@@ -69,7 +69,7 @@ const getAllDataCoursesOfOneTeacher = async (teacherId) => {
     return arrayAllCoursesInfo;
     // getInfoCourse(name)
   } catch (error) {
-    next(error);
+    throw error;
   }
 };
 

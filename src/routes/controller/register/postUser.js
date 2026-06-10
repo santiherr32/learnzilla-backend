@@ -96,8 +96,6 @@ const postUser = async (req, res, next) => {
       .status(200)
       .send({ message: "Usuario Registrado con Éxito", userId: user.id });
   } catch (error) {
-    error.status = 404;
-    error.body = error;
     next(error);
   }
 };

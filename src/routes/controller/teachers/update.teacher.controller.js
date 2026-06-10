@@ -30,8 +30,6 @@ const updateTeacher = async (req, res, next) => {
     );
     res.status(200).send({ message: "Profesor Actualizado" });
   } catch (error) {
-    error.status = 404;
-    error.body = { message: "Error al actualizar el profesor" };
     next(error);
   }
 };

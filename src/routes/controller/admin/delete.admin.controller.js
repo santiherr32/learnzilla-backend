@@ -21,8 +21,6 @@ const deteteAdmin = async (req, res, next) => {
     });
     res.status(200).send({ message: "Administrador Eliminado", admin }); //enviamos el estudiante eliminado
   } catch (error) {
-    error.status = 404;
-    error.body = { message: "Error al eliminar el administrador" };
     next(error);
   }
 };

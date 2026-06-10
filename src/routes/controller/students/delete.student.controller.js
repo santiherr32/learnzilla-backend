@@ -21,8 +21,6 @@ const deteteStudent = async (req, res, next) => {
     });
     res.status(200).send({ message: "Estudiante Eliminado", student }); //enviamos el estudiante eliminado
   } catch (error) {
-    error.status = 404;
-    error.body = { message: "Error al eliminar el estudiante" };
     next(error);
   }
 };

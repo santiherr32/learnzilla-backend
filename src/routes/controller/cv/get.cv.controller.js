@@ -5,8 +5,6 @@ const getCvs = async (req, res, next) => {
     const cvs = await Cv.findAll();
     res.send(cvs);
   } catch (error) {
-    error.status = 404;
-    error.body = error;
     next(error);
   }
 };
@@ -20,8 +18,6 @@ const getCv = async (req, res, next) => {
     }
     res.send(cv);
   } catch (error) {
-    error.status = 404;
-    error.body = error;
     next(error);
   }
 };

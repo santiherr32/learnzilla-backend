@@ -30,8 +30,6 @@ const updateAdmin = async (req, res, next) => {
     );
     res.status(200).send({ message: "Administrador Actualizado" });
   } catch (error) {
-    error.status = 404;
-    error.body = { message: "Error al actualizar el administrador" };
     next(error);
   }
 };

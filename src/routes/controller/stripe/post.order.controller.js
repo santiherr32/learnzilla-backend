@@ -59,7 +59,6 @@ const stripePay = async (req, res, next) => {
     }
   } catch (error) {
     error.status = 500;
-    error.body = error;
     next(error);
   }
 };
@@ -92,8 +91,6 @@ const generateOrder = async (req, res, next) => {
       .status(200)
       .send({ message: "Orden generada con exito", orderId: order.id });
   } catch (error) {
-    error.status = 404;
-    error.body = error;
     next(error);
   }
 };

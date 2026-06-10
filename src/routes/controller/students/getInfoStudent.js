@@ -35,7 +35,7 @@ const getInfoStudent = async (id) => {
     };
     return objStudetn;
   } catch (err) {
-    next(err);
+    throw err;
   }
 };
 

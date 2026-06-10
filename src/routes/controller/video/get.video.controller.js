@@ -8,8 +8,6 @@ const getAllVideos = async (req, res, next) => {
     });
     res.status(200).send(videos);
   } catch (error) {
-    error.status = 404;
-    error.body = error;
     next(error);
   }
 };
@@ -26,8 +24,6 @@ const getVideoDetail = async (req, res, next) => {
     }
     res.status(200).send(video);
   } catch (error) {
-    error.status = 404;
-    error.body = error;
     next(error);
   }
 };
@@ -44,8 +40,6 @@ const getCourseVideos = async (req, res, next) => {
     }
     res.status(200).send(videos);
   } catch (error) {
-    error.status = 404;
-    error.body = error;
     next(error);
   }
 };

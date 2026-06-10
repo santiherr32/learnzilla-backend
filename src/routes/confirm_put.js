@@ -8,7 +8,7 @@ router.use(json());
 router.use(urlencoded({ extended: true }));
 router.use(cors());
 
-router.put("/confirm", async (req, res) => {
+router.put("/confirm", async (req, res, next) => {
   const { email } = req.body;
   try {
     const verifyEmailStudent = await Student.findOne({ where: { email } });
@@ -42,12 +42,11 @@ router.put("/confirm", async (req, res) => {
       return res.send("Algo no funcionó bien");
     }
   } catch (error) {
-    error.body = "No pudo confirmarse";
     next(error);
   }
 });
 
-router.post("/forgotpassword", async (req, res) => {
+router.post("/forgotpassword", async (req, res, next) => {
   const { email, password } = req.body;
   console.log(password, email);
   try {
@@ -88,12 +87,11 @@ router.post("/forgotpassword", async (req, res) => {
 
     return res.status(400).send("Email incorrecto");
   } catch (error) {
-    error.body = error;
     next(error);
   }
 });
 
-router.post("/register", async (req, res) => {
+router.post("/register", async (req, res, next) => {
   let { name, lastName, email, password, salt } = req.body;
   try {
     const user = await Student.create({
@@ -105,16 +103,14 @@ router.post("/register", async (req, res) => {
     });
     res.json(user);
   } catch (error) {
-    error.body = `ERROR ${error}`;
     next(error);
   }
 });
-router.get("/student", async (req, res) => {
+router.get("/student", async (req, res, next) => {
   try {
     let student = await Student.findAll();
     res.send(student);
   } catch (error) {
-    error.body = error;
     next(error);
   }
 });

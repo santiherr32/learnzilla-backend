@@ -29,8 +29,6 @@ const updateCourse = async (req, res, next) => {
     );
     res.status(200).send({ message: "Curso actualizado" });
   } catch (error) {
-    error.status = 404;
-    error.body = error;
     next(error);
   }
 };
