@@ -43,7 +43,7 @@ const postReview = async (req, res, next) => {
         next(error);
       }
     } else {
-      throw new HttpError(404, { message: "Ya has calificado este curso" });
+      throw new HttpError(409, { message: "Ya has calificado este curso" });
     }
   } catch (error) {
     next(error);

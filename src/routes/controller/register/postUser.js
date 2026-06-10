@@ -45,7 +45,7 @@ const postUser = async (req, res, next) => {
       ]
     );
     if (existingStudent || existingTeacher || existingAdmin) {
-      throw new HttpError(404, { message: "El correo ya esta registrado" });
+      throw new HttpError(409, { message: "El correo ya esta registrado" });
     }
 
     const { newPassword, newSalt } = await generateHashedPassword(password);
@@ -91,7 +91,7 @@ const postUser = async (req, res, next) => {
       });
       user = admin;
     } else {
-      throw new HttpError(404, { message: "El rol no es valido" });
+      throw new HttpError(400, { message: "El rol no es valido" });
     }
     res
       .status(200)

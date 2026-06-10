@@ -39,7 +39,7 @@ router.post("/", async (req, res, next) => {
         }); //buscamos el usuario en la tabla de administradores
         role = "admin";
         if (!DbUser) {
-          throw new HttpError(404, { message: "usuario invalido" });
+          throw new HttpError(401, { message: "usuario invalido" });
         }
       }
     }
@@ -50,7 +50,7 @@ router.post("/", async (req, res, next) => {
       return res.status(200).send({ authorization: true, role, id: DbUser.id });
     }
 
-    throw new HttpError(404, { authorization: false });
+    throw new HttpError(401, { authorization: false });
   } catch (error) {
     next(error);
   }

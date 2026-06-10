@@ -56,7 +56,7 @@ const stripePay = async (req, res, next) => {
       );
       return res.status(200).send({ message: "Pago realizado con exito" });
     } else {
-      throw new HttpError(404, { message: "Ha ocurrido un error" });
+      throw new HttpError(500, { message: "Ha ocurrido un error" });
     }
   } catch (error) {
     error.status = 500;
