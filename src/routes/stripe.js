@@ -4,7 +4,7 @@ import {
   stripePay,
   generateOrder,
 } from "./controller/stripe/post.order.controller";
-import { getOrders, getOrder } from "./controller/stripe/get.orders.controller";
+import { getOrders, getOrder } from "./controller/stripe/get.orders.controller.js";
 
 router.post("/pay", stripePay);
 router.post("/generate", generateOrder);

@@ -6,8 +6,8 @@ import {
   getStudents,
   getStudent,
 } from "./controller/students/get.students.controller";
-import { updateStudent } from "./controller/students/update.student.controller";
-import { deteteStudent } from "./controller/students/delete.student.controller";
+import { updateStudent } from "./controller/students/update.student.controller.js";
+import { deteteStudent } from "./controller/students/delete.student.controller.js";
 
 router.get("/", getStudents);
 router.get("/detail/:id", getStudent);

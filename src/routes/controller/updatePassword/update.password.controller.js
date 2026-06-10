@@ -3,7 +3,7 @@ const { BYTES, BASE, ITERATIONS, LONG_ENCRYPTION, ENCRYPT_ALGORITHM } =
 import { createHash } from "crypto";
 import { Student, Teacher, Admin } from "../../../db.js";
 import { HttpError } from "../../../utils/HttpError.js";
-import { generateHashedPassword } from "../utils/PasswordHashing";
+import { generateHashedPassword } from "../../../utils/PasswordHashing.js";
 
 const updatePassword = async (req, res, next) => {
   const { email, password } = req.body;

@@ -2,9 +2,9 @@ import { Router } from "express";
 
 const router = Router();
 
-import { getAdmin, getAdmins } from "./controller/admin/get.admin.controller";
-import { updateAdmin } from "./controller/admin/update.admin.controller";
-import { deteteAdmin } from "./controller/admin/delete.admin.controller";
+import { getAdmin, getAdmins } from "./controller/admin/get.admin.controller.js";
+import { updateAdmin } from "./controller/admin/update.admin.controller.js";
+import { deteteAdmin } from "./controller/admin/delete.admin.controller.js";
 
 router.get("/", getAdmins);
 router.get("/detail/:id", getAdmin);

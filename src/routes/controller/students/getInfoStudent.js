@@ -1,4 +1,4 @@
-import { Student, Course } from "../../../db";
+import { Student, Course } from "../../../db.js";
 
 const getInfoStudent = async (id) => {
   try {

@@ -1,6 +1,6 @@
 import { Router } from "express";
 const router = Router();
-import { postUser } from "./controller/register/postUser";
+import { postUser } from "./controller/register/postUser.js";
 import cors from "cors";
 import { json, urlencoded } from "body-parser";
 

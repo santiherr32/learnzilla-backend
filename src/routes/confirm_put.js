@@ -1,9 +1,9 @@
 import express from "express";
 const router = express.Router();
-import { Student, Teacher } from "../db";
+import { Student, Teacher } from "../db.js";
 import cors from "cors";
 import { json, urlencoded } from "body-parser";
-import { generateHashedPassword } from "../routes/utils/PasswordHashing";
+import { generateHashedPassword } from "../utils/PasswordHashing.js";
 import { HttpError } from "../utils/HttpError.js";
 router.use(json());
 router.use(urlencoded({ extended: true }));

@@ -2,7 +2,7 @@ import { Router } from "express";
 
 const router = Router();
 
-import { loginGoogle } from "./controller/user.controller";
+import { loginGoogle } from "./controller/user.controller.js";
 
 //// routes ////
 

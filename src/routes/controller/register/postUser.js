@@ -1,8 +1,8 @@
-import { Student, Teacher, Admin } from "../../db";
+import { Student, Teacher, Admin } from "../../db.js";
 const { EMAIL_USER, PASSWORD_USER } = process.env;
 import nodemailer from "nodemailer";
-import { generateHashedPassword } from "../../utils/PasswordHashing";
-import { HttpError } from "../../utils/HttpError";
+import { generateHashedPassword } from "../../../utils/PasswordHashing.js";
+import { HttpError } from "../../utils/HttpError.js";
 
 const sendConfirmationEmail = async (email, name) => {
   let Transport = nodemailer.createTransport({

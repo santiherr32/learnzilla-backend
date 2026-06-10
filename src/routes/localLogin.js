@@ -7,7 +7,7 @@ const {
   EMAIL_ADMIN,
   PASSWORD_ADMIN,
 } = process.env;
-import { verifyHashedPassword } from "../routes/utils/PasswordHashing";
+import { verifyHashedPassword } from "../utils/PasswordHashing.js";
 const router = Router();
 import { Student, Teacher, Admin } from "../db.js";
 import { createHash } from "crypto";

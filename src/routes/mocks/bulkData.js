@@ -7,9 +7,9 @@ import {
   Category,
   Datamaker,
 } from "../../db.js";
-import { generateHashedPassword } from "../../utils/PasswordHashing";
-import { courseMocks, videos, imagenes } from "./mocksDataCourses";
-import { getCategoryId } from "../controller/getCategoryId";
+import { generateHashedPassword } from "../../utils/PasswordHashing.js";
+import { courseMocks, videos, imagenes } from "./mocksDataCourses.js";
+import { getCategoryId } from "../controller/getCategoryId.js";
 
 const { FAKE_PASSWORD } = process.env;
 

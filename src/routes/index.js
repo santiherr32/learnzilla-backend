@@ -1,7 +1,7 @@
 import { Router } from "express";
 // Importar todos los routers;
 import register from "./register.js";
-import user from "./user.routes";
+import user from "./user.routes.js";
 import confirmput from "./confirm_put.js";
 
 const router = Router();

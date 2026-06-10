@@ -5,10 +5,10 @@ import {
   getVideoDetail,
   getCourseVideos,
 } from "./controller/video/get.video.controller";
-import { postVideo } from "./controller/video/post.video.controller";
-import { postRecord } from "./controller/video/post.record.controller";
-import { updateVideo } from "./controller/video/update.video.controller";
-import { deleteVideo } from "./controller/video/delete.video.controller";
+import { postVideo } from "./controller/video/post.video.controller.js";
+import { postRecord } from "./controller/video/post.record.controller.js";
+import { updateVideo } from "./controller/video/update.video.controller.js";
+import { deleteVideo } from "./controller/video/delete.video.controller.js";
 
 router.get("/", getAllVideos);
 router.get("/detail/:id", getVideoDetail);

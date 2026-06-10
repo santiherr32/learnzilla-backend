@@ -1,5 +1,5 @@
 import { Router } from "express";
-import validateCourse from "../middlewares/validateCourse";
+import validateCourse from "../middlewares/validateCourse.js";
 const router = Router();
 import {
   getCourses,

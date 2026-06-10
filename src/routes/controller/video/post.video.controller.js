@@ -1,4 +1,4 @@
-import { Course, Video } from "../../../db";
+import { Course, Video } from "../../../db.js";
 import { HttpError } from "../../../utils/HttpError.js";
 
 const postVideo = async (req, res, next) => {

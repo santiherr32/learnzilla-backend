@@ -1,8 +1,8 @@
 import { Router } from "express";
 const router = Router();
-import { postCategory } from "./controller/category/post.category.controller";
-import { getCategory } from "./controller/category/get.category.controller";
-import { deleteCategory } from "./controller/category/delete.category.controller";
+import { postCategory } from "./controller/category/post.category.controller.js";
+import { getCategory } from "./controller/category/get.category.controller.js";
+import { deleteCategory } from "./controller/category/delete.category.controller.js";
 
 //*Create the categories , the input is an array of categories
 router.post("/create", postCategory);
