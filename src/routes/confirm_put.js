@@ -2,7 +2,7 @@ import express from "express";
 const router = express.Router();
 import { Student, Teacher } from "../db.js";
 import cors from "cors";
-import { json, urlencoded } from "body-parser";
+import { json, urlencoded } from "express";
 import { generateHashedPassword } from "../utils/PasswordHashing.js";
 import { HttpError } from "../utils/HttpError.js";
 router.use(json());
@@ -49,7 +49,7 @@ router.put("/confirm", async (req, res, next) => {
 
 router.post("/forgotpassword", async (req, res, next) => {
   const { email, password } = req.body;
-  console.log(password, email);
+
   try {
     const verifyEmailStudent = await Student.findOne({ where: { email } });
     if (verifyEmailStudent) {

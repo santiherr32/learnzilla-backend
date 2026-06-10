@@ -1,6 +1,6 @@
 import "dotenv/config";
 const { STRIPE_KEY } = process.env;
-import { Student, Course, Order } from "../../../db.js";
+import { Student, Order } from "../../../db.js";
 import { HttpError } from "../../../utils/HttpError.js";
 import Stripe from "stripe";
 const stripe = Stripe(STRIPE_KEY);
@@ -42,7 +42,6 @@ const stripePay = async (req, res, next) => {
     });
     if (charge) {
       //Si se creo el cargo
-      // return res.status(200).send(charge);
       await student.addCourse(order.arrayCoursesId); //Agrega los cursos al estudiante
       await Order.update(
         {
@@ -77,7 +76,7 @@ const generateOrder = async (req, res, next) => {
     if (!student) {
       throw new HttpError(404, { message: "No se encontro el estudiante" });
     }
-    // student.addCourse(coursesId); //Agrega los cursos al estudiante
+
     const order = await Order.create({
       id: id,
       studentId: studentId,
@@ -85,7 +84,7 @@ const generateOrder = async (req, res, next) => {
       arrayCoursesId: coursesId,
       status: status,
     });
-    console.log("Orden creada");
+
     res
       .status(200)
       .send({ message: "Orden generada con exito", orderId: order.id });

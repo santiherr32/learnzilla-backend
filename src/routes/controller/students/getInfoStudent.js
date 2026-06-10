@@ -1,8 +1,7 @@
 import { Student, Course } from "../../../db.js";
 
 const getInfoStudent = async (id) => {
-  try {
-    let student = await Student.findOne({
+  let student = await Student.findOne({
       where: {
         id: id,
       },
@@ -33,10 +32,7 @@ const getInfoStudent = async (id) => {
       role: student.role,
       courses: arrayCoursesId,
     };
-    return objStudetn;
-  } catch (err) {
-    throw err;
-  }
+  return objStudetn;
 };
 
 export default {

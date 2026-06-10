@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { Sequelize } from "sequelize";
 import { readdirSync } from "fs";
 import { basename as _basename, join } from "path";
@@ -5,6 +6,13 @@ const { DB_URL } = process.env;
 import { DataTypes } from "sequelize";
 import pg from "pg";
 import { parse } from "pg-connection-string";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+import { createRequire } from "module";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const require = createRequire(import.meta.url);
 
 const config = parse(DB_URL);
 
@@ -42,9 +50,9 @@ const sequelize = new Sequelize(
   process.env.NODE_ENV === "production"
     ? commonSequelizeOptions
     : {
-        ...commonSequelizeOptions,
-        native: false, // lets Sequelize know we can use pg-native for ~30% more speed
-      }
+      ...commonSequelizeOptions,
+      native: false, // lets Sequelize know we can use pg-native for ~30% more speed
+    }
 );
 const basename = _basename(__filename);
 
@@ -61,7 +69,7 @@ readdirSync(join(__dirname, "/models"))
   });
 
 // Injectamos la conexion (sequelize) a todos los modelos
-modelDefiners.forEach((model) => model(sequelize));
+modelDefiners.forEach((model) => (model.default || model)(sequelize));
 // Capitalizamos los nombres de los modelos ie: product => Product
 let entries = Object.entries(sequelize.models);
 let capsEntries = entries.map((entry) => [
@@ -72,18 +80,18 @@ sequelize.models = Object.fromEntries(capsEntries);
 
 // En sequelize.models están todos los modelos importados como propiedades
 // Para relacionarlos hacemos un destructuring
-const {
+export const {
   Category,
   Course,
   Student,
   Teacher,
   Video,
   Review,
-  Records,
   Admin,
   Order,
   Cv,
   Datamaker,
+  Records
 } = sequelize.models;
 
 // Aca vendrian las relaciones
@@ -167,7 +175,4 @@ Review.belongsTo(Course, { foreignKey: "FKcourseID" });
 // });
 // Order.belongsTo(Student);
 
-export default {
-  ...sequelize.models, // para poder importar los modelos
-  conn: sequelize, // para importart la conexión
-};
+export const conn = sequelize; // para importart la conexión

@@ -2,8 +2,7 @@
 import { Category, Course, Review, Teacher, conn } from "../../../db.js";
 
 const getInfoCourse = async (name) => {
-  try {
-    const course = await Course.findOne({
+  const course = await Course.findOne({
       where: { name },
       attributes: [
         "id",
@@ -59,10 +58,7 @@ const getInfoCourse = async (name) => {
       teacherName: `${course.Teacher.name} ${course.Teacher.lastName}`,
       categories: course.Categories.map((cat) => cat.name),
       meanReview: course.dataValues.meanReview || 0,
-    };
-  } catch (err) {
-    throw err;
-  }
+  };
 };
 
 export { getInfoCourse, };

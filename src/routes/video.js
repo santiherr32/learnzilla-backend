@@ -4,7 +4,7 @@ import {
   getAllVideos,
   getVideoDetail,
   getCourseVideos,
-} from "./controller/video/get.video.controller";
+} from "./controller/video/get.video.controller.js";
 import { postVideo } from "./controller/video/post.video.controller.js";
 import { postRecord } from "./controller/video/post.record.controller.js";
 import { updateVideo } from "./controller/video/update.video.controller.js";

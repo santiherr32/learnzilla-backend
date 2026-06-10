@@ -1,8 +1,7 @@
 import "dotenv/config";
-const { CLIENT_ID } = process.env;
+
 import { Student } from "../../db.js";
 
-const clientId = CLIENT_ID;
 
 const loginGoogle = async (req, res, next) => {
   const { firstName, lastName, email, tokenId } = req.body;

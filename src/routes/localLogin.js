@@ -1,16 +1,11 @@
 import { Router } from "express";
 const {
-  BASE,
-  ITERATIONS,
-  LONG_ENCRYPTION,
-  ENCRYPT_ALGORITHM,
   EMAIL_ADMIN,
   PASSWORD_ADMIN,
 } = process.env;
 import { verifyHashedPassword } from "../utils/PasswordHashing.js";
 const router = Router();
 import { Student, Teacher, Admin } from "../db.js";
-import { createHash } from "crypto";
 import { HttpError } from "../utils/HttpError.js";
 
 router.post("/", async (req, res, next) => {

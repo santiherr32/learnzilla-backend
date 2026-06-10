@@ -11,7 +11,6 @@ server.use(helmet());
 
 import cors from "cors";
 
-server.name = "API";
 
 server.use(cors());
 server.use(urlencoded({ extended: true, limit: "50mb" }));
@@ -36,8 +35,7 @@ server.use((req, res, next) => {
 server.use("/", routes); //me traigo las rutas de quefiní para usarlas y generar mi enrutado
 
 // Error catching endware.
-server.use((err, req, res, next) => {
-  // eslint-disable-line no-unused-vars
+server.use((err, req, res, _next) => {
   const status = err.status || 500;
   const response = err.body || { message: err.message || "Error interno del servidor" };
   console.error(err);

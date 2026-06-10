@@ -1,11 +1,9 @@
 //Función para obtener la data de todos los cursos
-import { where } from "sequelize";
 import { Course, Category, Review, Teacher, conn } from "../../../db.js";
 import { getInfoCourse } from "./getInfoCourse.js";
 
 const getAllDataCourses = async () => {
-  try {
-    const courses = await Course.findAll({
+  const courses = await Course.findAll({
       attributes: [
         "id",
         "name",
@@ -45,15 +43,11 @@ const getAllDataCourses = async () => {
         "Teacher.lastName",
       ],
     });
-    return courses;
-  } catch (error) {
-    throw error;
-  }
+  return courses;
 };
 
 const getAllDataCoursesOfOneTeacher = async (teacherId) => {
-  try {
-    let getAllCourses = await Course.findAll({
+  let getAllCourses = await Course.findAll({
       //Busca todos los cursos de un profesor
       where: {
         FKteacherID: teacherId,
@@ -66,11 +60,7 @@ const getAllDataCoursesOfOneTeacher = async (teacherId) => {
       let temporaryInfo = await getInfoCourse(courseName.dataValues.name); //Obtiene la información del curso
       arrayAllCoursesInfo.push(temporaryInfo); //Agrega la información del curso al array
     }
-    return arrayAllCoursesInfo;
-    // getInfoCourse(name)
-  } catch (error) {
-    throw error;
-  }
+  return arrayAllCoursesInfo;
 };
 
 export { getAllDataCourses,

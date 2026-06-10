@@ -4,7 +4,7 @@ import { Op } from "sequelize";
 
 const getStudentReview = async (req, res, next) => {
   const { studentId, courseId } = req.query;
-  console.log({ studentId, courseId });
+
   try {
     const review = await Review.findOne({
       where: {

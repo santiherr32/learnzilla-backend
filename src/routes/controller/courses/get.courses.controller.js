@@ -1,6 +1,5 @@
 import { Course } from "../../../db.js";
 
-import { filterCategory } from "../middleware.js";
 import { getCoursesByQuery } from "./getCoursesByQuery.js";
 import {
   getAllDataCourses,
@@ -64,14 +63,5 @@ const getCoursesTeacher = async (req, res, next) => {
   }
 };
 
-// const getCourseById = async (id) => {
-//   try {
-//     const courseById = await Course.findByPk(id.toUpperCase());
-//     // console.log(courseById);
-//     return courseById;
-//   } catch (error) {
-//     throw error;
-//   }
-// };
 
 export { getCourses, getCourseDetail, getCoursesTeacher };

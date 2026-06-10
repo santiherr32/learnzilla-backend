@@ -1,8 +1,8 @@
 import { Router } from "express";
 const router = Router();
-import { postUser } from "./controller/register/postUser.js";
+import postUser from "./controller/register/postUser.js";
 import cors from "cors";
-import { json, urlencoded } from "body-parser";
+import { json, urlencoded } from "express";
 
 router.use(json());
 router.use(urlencoded({ extended: true }));

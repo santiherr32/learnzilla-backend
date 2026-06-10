@@ -5,7 +5,7 @@ import {
   getReview,
   getReviewById,
   getStudentReview,
-} from "./controller/review/get.review.controller";
+} from "./controller/review/get.review.controller.js";
 
 router.post("/create", postReview);
 router.get("/", getReview);

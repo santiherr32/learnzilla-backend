@@ -1,7 +1,4 @@
-const { BYTES, BASE, ITERATIONS, LONG_ENCRYPTION, ENCRYPT_ALGORITHM } =
-  process.env;
-import { createHash } from "crypto";
-import { Student, Teacher, Admin } from "../../../db.js";
+import { Student, Teacher } from "../../../db.js";
 import { HttpError } from "../../../utils/HttpError.js";
 import { generateHashedPassword } from "../../../utils/PasswordHashing.js";
 
@@ -56,6 +53,6 @@ const updatePassword = async (req, res, next) => {
   }
 };
 
-export default {
+export {
   updatePassword,
 };

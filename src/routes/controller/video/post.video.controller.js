@@ -30,6 +30,6 @@ const postVideo = async (req, res, next) => {
   }
 };
 
-export default {
+export {
   postVideo,
 };

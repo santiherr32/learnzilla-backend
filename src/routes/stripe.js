@@ -3,7 +3,7 @@ const router = Router();
 import {
   stripePay,
   generateOrder,
-} from "./controller/stripe/post.order.controller";
+} from "./controller/stripe/post.order.controller.js";
 import { getOrders, getOrder } from "./controller/stripe/get.orders.controller.js";
 
 router.post("/pay", stripePay);

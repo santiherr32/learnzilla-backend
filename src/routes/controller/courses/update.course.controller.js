@@ -1,6 +1,4 @@
 import { Course, Category } from "../../../db.js";
-import { getInfoCourse } from "./getInfoCourse.js";
-import { getCategoryId } from "../getCategoryId.js";
 import { HttpError } from "../../../utils/HttpError.js";
 const updateCourse = async (req, res, next) => {
   const { id } = req.params;

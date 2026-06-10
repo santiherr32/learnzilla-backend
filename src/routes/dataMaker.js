@@ -1,7 +1,7 @@
 import { Router } from "express";
 const router = Router();
 
-import { dataMaker } from "./mocks/bulkData.js";
+import dataMaker from "./mocks/bulkData.js";
 
 router.post("/", dataMaker);
 
