@@ -1,4 +1,5 @@
 import { Review } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
 import { Op } from "sequelize";
 
 const getStudentReview = async (req, res, next) => {
@@ -11,7 +12,7 @@ const getStudentReview = async (req, res, next) => {
       },
     });
     if (!review) {
-      return res.status(404).send({ flag: false });
+      throw new HttpError(404, { flag: false });
     }
     res.status(200).send({ flag: true });
   } catch (error) {
@@ -22,8 +23,8 @@ const getStudentReview = async (req, res, next) => {
 const getReview = async (req, res, next) => {
   try {
     const review = await Review.findAll();
-    if (!review) {
-      res.status(404).send({ message: "Aún no hay reviews" });
+    if (review.length === 0) {
+      throw new HttpError(404, { message: "Aún no hay reviews" });
     }
     res.status(200).send(review);
   } catch (error) {
@@ -39,8 +40,8 @@ const getReviewById = async (req, res, next) => {
         FKcourseID: id,
       },
     });
-    if (!review.length) {
-      return res.status(404).send({ message: "El curso aún no tiene reviews" });
+    if (review.length === 0) {
+      throw new HttpError(404, { message: "El curso aún no tiene reviews" });
     }
     res.status(200).send(review);
   } catch (error) {

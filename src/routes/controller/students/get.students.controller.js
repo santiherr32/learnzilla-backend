@@ -1,6 +1,7 @@
 import { Student, Course } from "../../../db.js";
 import { getInfoStudent } from "./getInfoStudent.js";
 import { getAllStudents } from "./getAllStudents.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
 const getStudents = async (req, res, next) => {
   try {
@@ -17,7 +18,7 @@ const getStudent = async (req, res, next) => {
     console.log(id);
     let student = await getInfoStudent(id);
     if (!student) {
-      return res.status(404).send({ message: "Estudiante no encontrado" });
+      throw new HttpError(404, { message: "Estudiante no encontrado" });
     }
     res.status(200).json(student);
   } catch (err) {

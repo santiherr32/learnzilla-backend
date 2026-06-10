@@ -39,9 +39,9 @@ server.use("/", routes); //me traigo las rutas de quefiní para usarlas y genera
 server.use((err, req, res, next) => {
   // eslint-disable-line no-unused-vars
   const status = err.status || 500;
-  const message = err.message || err;
+  const response = err.body || { message: err.message || "Error interno del servidor" };
   console.error(err);
-  res.status(status).send(message);
+  res.status(status).send(response);
 });
 
 export default server;

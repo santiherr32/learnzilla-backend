@@ -1,4 +1,5 @@
 import { Video } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
 const getAllVideos = async (req, res, next) => {
   try {
@@ -20,7 +21,7 @@ const getVideoDetail = async (req, res, next) => {
       attributes: ["id", "title", "description", "url", "FKcourseID", "img"],
     });
     if (!video) {
-      return res.status(404).send({ message: "El video no existe" });
+      throw new HttpError(404, { message: "El video no existe" });
     }
     res.status(200).send(video);
   } catch (error) {
@@ -36,7 +37,7 @@ const getCourseVideos = async (req, res, next) => {
       attributes: ["id", "title", "description", "url", "FKcourseID", "img"],
     });
     if (!videos) {
-      return res.status(404).send({ message: "No hay videos" });
+      throw new HttpError(404, { message: "No hay videos" });
     }
     res.status(200).send(videos);
   } catch (error) {

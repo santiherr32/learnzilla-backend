@@ -1,4 +1,5 @@
 import { Admin } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
 const getAdmins = async (req, res, next) => {
   try {
@@ -21,7 +22,7 @@ const getAdmin = async (req, res, next) => {
       attributes: ["id", "name", "lastName", "email", "avatar", "role"], //solo vamos a enviar estos atributos al front
     });
     if (!admin) {
-      return res.status(404).send({ message: "Administrador no encontrado" });
+      throw new HttpError(404, { message: "Administrador no encontrado" });
     }
     res.status(200).json(admin);
   } catch (err) {

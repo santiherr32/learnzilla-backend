@@ -1,7 +1,8 @@
 const { BYTES, BASE, ITERATIONS, LONG_ENCRYPTION, ENCRYPT_ALGORITHM } =
   process.env;
-import { randomBytes, pbkdf2 } from "crypto";
-import { Student, Teacher } from "../../../db";
+import { createHash } from "crypto";
+import { Student, Teacher, Admin } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
 import { generateHashedPassword } from "../utils/PasswordHashing";
 
 const updatePassword = async (req, res, next) => {
@@ -49,7 +50,7 @@ const updatePassword = async (req, res, next) => {
       });
     }
 
-    return res.status(404).send({ message: "Correo Inválido" });
+    throw new HttpError(404, { message: "Correo Inválido" });
   } catch (err) {
     next(err);
   }

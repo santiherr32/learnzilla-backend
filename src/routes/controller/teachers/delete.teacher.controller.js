@@ -1,4 +1,5 @@
 import { Teacher } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
 const deteteTeacher = async (req, res, next) => {
   const { id } = req.params;
@@ -11,7 +12,7 @@ const deteteTeacher = async (req, res, next) => {
       attributes: ["name", "lastName", "email", "avatar"], //sacamos los atributos que nos interesan
     });
     if (!teacher) {
-      return res.status(404).send({ message: "Profesor no encontrado" });
+      throw new HttpError(404, { message: "Profesor no encontrado" });
     }
     await Teacher.destroy({
       where: {

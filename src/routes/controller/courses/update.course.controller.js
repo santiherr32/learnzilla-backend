@@ -1,6 +1,7 @@
 import { Course, Category } from "../../../db.js";
 import { getInfoCourse } from "./getInfoCourse.js";
 import { getCategoryId } from "../getCategoryId.js";
+import { HttpError } from "../../../utils/HttpError.js";
 const updateCourse = async (req, res, next) => {
   const { id } = req.params;
   const { name, description, price, img } = req.body;
@@ -14,7 +15,7 @@ const updateCourse = async (req, res, next) => {
     });
 
     if (!course) {
-      return res.status(404).send({ message: "Curso no encontrado" }); //si no se encuentra el curso
+      throw new HttpError(404, { message: "Curso no encontrado" }); //si no se encuentra el curso
     }
 
     await Course.update(

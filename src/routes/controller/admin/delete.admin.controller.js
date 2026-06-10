@@ -1,4 +1,5 @@
 import { Admin } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
 const deteteAdmin = async (req, res, next) => {
   const { id } = req.params;
@@ -11,7 +12,7 @@ const deteteAdmin = async (req, res, next) => {
       attributes: ["name", "lastName", "email", "avatar"], //vamos a mandar solo los atributos que nos interesan
     });
     if (!admin) {
-      return res.status(404).send({ message: "Administrador no encontrado" });
+      throw new HttpError(404, { message: "Administrador no encontrado" });
     }
     await Admin.destroy({
       //eliminamos el administrador

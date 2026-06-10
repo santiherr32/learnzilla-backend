@@ -2,6 +2,7 @@ import { Student, Teacher, Admin } from "../../db";
 const { EMAIL_USER, PASSWORD_USER } = process.env;
 import nodemailer from "nodemailer";
 import { generateHashedPassword } from "../../utils/PasswordHashing";
+import { HttpError } from "../../utils/HttpError";
 
 const sendConfirmationEmail = async (email, name) => {
   let Transport = nodemailer.createTransport({
@@ -44,7 +45,7 @@ const postUser = async (req, res, next) => {
       ]
     );
     if (existingStudent || existingTeacher || existingAdmin) {
-      return res.status(404).send({ message: "El correo ya esta registrado" });
+      throw new HttpError(404, { message: "El correo ya esta registrado" });
     }
 
     const { newPassword, newSalt } = await generateHashedPassword(password);
@@ -90,7 +91,7 @@ const postUser = async (req, res, next) => {
       });
       user = admin;
     } else {
-      return res.status(404).send({ message: "El rol no es valido" });
+      throw new HttpError(404, { message: "El rol no es valido" });
     }
     res
       .status(200)

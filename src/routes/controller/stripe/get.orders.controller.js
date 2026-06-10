@@ -1,4 +1,5 @@
 import { Order } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
 const getOrders = async (req, res, next) => {
   try {
@@ -18,7 +19,7 @@ const getOrder = async (req, res, next) => {
       },
     });
     if (!order) {
-      res.status(404).send({ message: "No se encontro el pedido" });
+      throw new HttpError(404, { message: "No se encontro el pedido" });
     }
     res.status(200).send(order);
   } catch (error) {

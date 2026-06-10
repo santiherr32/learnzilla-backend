@@ -1,11 +1,12 @@
 import { Cv, Teacher } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
 const postCv = async (req, res, next) => {
   const { teacherId, urlCv } = req.body;
   try {
     const teacher = await Teacher.findByPk(teacherId);
     if (!teacher) {
-      return res.status(404).send({ message: "El profesor es inválido" });
+      throw new HttpError(404, { message: "El profesor es inválido" });
     }
     const cv = await Cv.create({
       teacherId,

@@ -9,7 +9,9 @@ const {
 } = process.env;
 import { verifyHashedPassword } from "../routes/utils/PasswordHashing";
 const router = Router();
-import { Student, Teacher, Admin } from "../db";
+import { Student, Teacher, Admin } from "../db.js";
+import { createHash } from "crypto";
+import { HttpError } from "../utils/HttpError.js";
 
 router.post("/", async (req, res, next) => {
   const { email, password } = req.body;
@@ -36,8 +38,9 @@ router.post("/", async (req, res, next) => {
           where: { email: email.trim().toLowerCase() },
         }); //buscamos el usuario en la tabla de administradores
         role = "admin";
-        if (!DbUser)
-          return res.status(404).send({ message: "usuario invalido" });
+        if (!DbUser) {
+          throw new HttpError(404, { message: "usuario invalido" });
+        }
       }
     }
 
@@ -47,7 +50,7 @@ router.post("/", async (req, res, next) => {
       return res.status(200).send({ authorization: true, role, id: DbUser.id });
     }
 
-    return res.status(404).send({ authorization: false });
+    throw new HttpError(404, { authorization: false });
   } catch (error) {
     next(error);
   }

@@ -1,4 +1,5 @@
 import { Course, Student, Review } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
 const postReview = async (req, res, next) => {
   const { courseId, studentId, score } = req.body;
@@ -9,7 +10,7 @@ const postReview = async (req, res, next) => {
       },
     });
     if (!FKCourse) {
-      return res.status(404).send({ message: "El curso no existe" });
+      throw new HttpError(404, { message: "El curso no existe" });
     }
     const FKStudent = await Student.findOne({
       where: {
@@ -17,7 +18,7 @@ const postReview = async (req, res, next) => {
       },
     });
     if (!FKStudent) {
-      return res.status(404).send({ message: "El estudiante no existe" });
+      throw new HttpError(404, { message: "El estudiante no existe" });
     }
     const flag = await Review.findOne({
       where: {
@@ -42,7 +43,7 @@ const postReview = async (req, res, next) => {
         next(error);
       }
     } else {
-      res.status(404).send({ message: "Ya has calificado este curso" });
+      throw new HttpError(404, { message: "Ya has calificado este curso" });
     }
   } catch (error) {
     next(error);

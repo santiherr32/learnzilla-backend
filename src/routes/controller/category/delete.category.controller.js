@@ -1,4 +1,5 @@
 import { Category } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
 const deleteCategory = async (req, res, next) => {
   const { id } = req.params;
@@ -10,7 +11,7 @@ const deleteCategory = async (req, res, next) => {
       },
     });
     if (!category) {
-      res.status(404).send({ message: "Categoria no encontrada" });
+      throw new HttpError(404, { message: "Categoria no encontrada" });
     }
     await category.destroy({
       //eliminamos la categoria

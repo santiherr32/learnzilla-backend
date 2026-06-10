@@ -1,6 +1,7 @@
 import { Router } from "express";
 const router = Router();
 import { courseMocks } from "./mocks/mocksDataCourses.js";
+import { HttpError } from "../utils/HttpError.js";
 
 router.get("/", (req, res) => {
   res.status(200).send(courseMocks);
@@ -12,7 +13,7 @@ router.get("/:id", (req, res) => {
   if (course) {
     res.status(200).send(course);
   } else {
-    res.status(404).send({ message: "No existe el curso" });
+    throw new HttpError(404, { message: "No existe el curso" });
   }
 });
 

@@ -1,4 +1,5 @@
 import { Video } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
 const deleteVideo = async (req, res, next) => {
   const { id } = req.params;
@@ -8,7 +9,7 @@ const deleteVideo = async (req, res, next) => {
       attributes: ["title", "description", "url", "FKcourseID"],
     });
     if (!video) {
-      return res.status(404).send({ message: "El video no existe" });
+      throw new HttpError(404, { message: "El video no existe" });
     }
     await Video.destroy({
       where: { id },

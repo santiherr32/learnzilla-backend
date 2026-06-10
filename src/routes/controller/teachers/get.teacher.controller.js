@@ -1,4 +1,5 @@
 import { Teacher } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
 const getTeachers = async (req, res, next) => {
   try {
@@ -21,7 +22,7 @@ const getTeacher = async (req, res, next) => {
       attributes: ["id", "name", "lastName", "email", "avatar", "role"], //solo vamos a enviar estos atributos al front
     });
     if (!teacher) {
-      return res.status(404).send({ message: "Profesor no encontrado" });
+      throw new HttpError(404, { message: "Profesor no encontrado" });
     }
     res.status(200).json(teacher);
   } catch (err) {

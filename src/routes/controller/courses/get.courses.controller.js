@@ -7,6 +7,7 @@ import {
   getAllDataCoursesOfOneTeacher,
 } from "./getAllDataCourses.js";
 import { getInfoCourse } from "./getInfoCourse.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
 const getAllCourses = async (req, res, next) => {
   try {
@@ -45,7 +46,7 @@ const getCourseDetail = async (req, res, next) => {
     }
     const detail = await getInfoCourse(name.name); //Obtiene el detalle del curso
     if (!detail) {
-      return res.status(404).send({ message: "Curso no encontrado" }); //Si no encuentra el curso, retorna un error
+      throw new HttpError(404, { message: "Curso no encontrado" }); //Si no encuentra el curso, retorna un error
     }
     res.json(detail); //Envía el detalle del curso
   } catch (error) {

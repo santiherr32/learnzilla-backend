@@ -1,5 +1,6 @@
 import { Course, Teacher } from "../../../db.js";
 import { getCategoryId, getCategoryNames } from "../getCategoryId.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
 const postCourses = async (req, res, next) => {
   //*email is of the teacher, category must be an array
@@ -32,7 +33,7 @@ const postCourses = async (req, res, next) => {
       await courseCreated.addCategory(categoryID); //Agrega las categorias al curso
       res.status(200).send({ message: "El curso se ha creado correctamente" });
     } else {
-      res.status(400).send({ message: "El curso ya existe" });
+      throw new HttpError(400, { message: "El curso ya existe" });
     }
   } catch (error) {
     next(error);

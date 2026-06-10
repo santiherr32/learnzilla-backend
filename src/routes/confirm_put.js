@@ -4,6 +4,7 @@ import { Student, Teacher } from "../db";
 import cors from "cors";
 import { json, urlencoded } from "body-parser";
 import { generateHashedPassword } from "../routes/utils/PasswordHashing";
+import { HttpError } from "../utils/HttpError.js";
 router.use(json());
 router.use(urlencoded({ extended: true }));
 router.use(cors());
@@ -85,7 +86,7 @@ router.post("/forgotpassword", async (req, res, next) => {
       return res.send("Contraseña cambiada");
     }
 
-    return res.status(400).send("Email incorrecto");
+    throw new HttpError(400, "Email incorrecto");
   } catch (error) {
     next(error);
   }

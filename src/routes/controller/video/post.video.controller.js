@@ -1,4 +1,5 @@
 import { Course, Video } from "../../../db";
+import { HttpError } from "../../../utils/HttpError.js";
 
 const postVideo = async (req, res, next) => {
   let { title, description, url, cursoId, img } = req.body;
@@ -8,7 +9,7 @@ const postVideo = async (req, res, next) => {
   try {
     const FK = await Course.findByPk(cursoId);
     if (!FK) {
-      return res.status(404).send({ message: "El curso es inválido" });
+      throw new HttpError(404, { message: "El curso es inválido" });
     }
 
     if (!img) img = "https://placeimg.com/240/120/tech";

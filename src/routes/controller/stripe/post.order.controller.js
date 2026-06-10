@@ -1,6 +1,7 @@
 import "dotenv/config";
 const { STRIPE_KEY } = process.env;
 import { Student, Course, Order } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
 import Stripe from "stripe";
 const stripe = Stripe(STRIPE_KEY);
 
@@ -14,7 +15,7 @@ const stripePay = async (req, res, next) => {
       },
     });
     if (!order) {
-      res.status(404).send({ message: "No se encontro la orden" });
+      throw new HttpError(404, { message: "No se encontro la orden" });
     }
     const student = await Student.findOne({
       where: {
@@ -22,7 +23,7 @@ const stripePay = async (req, res, next) => {
       },
     });
     if (!student) {
-      res.status(404).send({ message: "No se encontro el estudiante" });
+      throw new HttpError(404, { message: "No se encontro el estudiante" });
     }
 
     let customer = await stripe.customers.create({
@@ -55,7 +56,7 @@ const stripePay = async (req, res, next) => {
       );
       return res.status(200).send({ message: "Pago realizado con exito" });
     } else {
-      return res.status(404).send({ message: "Ha ocurrido un error" });
+      throw new HttpError(404, { message: "Ha ocurrido un error" });
     }
   } catch (error) {
     error.status = 500;
@@ -74,9 +75,7 @@ const generateOrder = async (req, res, next) => {
       },
     });
     if (!student) {
-      //Si no existe el estudiante
-      console.log("No existe el estudiante");
-      return res.status(404).send({ message: "No se encontro el estudiante" });
+      throw new HttpError(404, { message: "No se encontro el estudiante" });
     }
     // student.addCourse(coursesId); //Agrega los cursos al estudiante
     const order = await Order.create({

@@ -1,4 +1,5 @@
 import { Course } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
 const deleteCourse = async (req, res, next) => {
   const { id } = req.params;
@@ -10,7 +11,7 @@ const deleteCourse = async (req, res, next) => {
       attributes: ["name", "description", "price", "img", "FKteacherID"],
     });
     if (!course) {
-      return res.status(404).send({ message: "Curso no encontrado" });
+      throw new HttpError(404, { message: "Curso no encontrado" });
     }
     await Course.destroy({
       where: {
