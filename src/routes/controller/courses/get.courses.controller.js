@@ -41,8 +41,7 @@ const getCourseDetail = async (req, res, next) => {
         },
       });
     } catch (error) {
-      next(error);
-      return;
+      return next(error);
     }
     const detail = await getInfoCourse(name.name); //Obtiene el detalle del curso
     if (!detail) {

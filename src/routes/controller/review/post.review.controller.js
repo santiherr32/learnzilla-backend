@@ -39,8 +39,8 @@ const postReview = async (req, res, next) => {
           flag: review.flag,
         });
       } catch (error) {
-    next(error);
-  }
+        next(error);
+      }
     } else {
       res.status(404).send({ message: "Ya has calificado este curso" });
     }

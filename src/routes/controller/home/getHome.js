@@ -7,7 +7,7 @@ const getLastFiveCourses = async (req, res, next) => {
       where: { idStudent: idStudent },
       attributes: ["idVideo"], //saco el atributo id video
     });
-    //*take out duplicate idVideos
+
     let uniqueID = history.filter((element, index) => {
       return history.indexOf(element) === index;
     });
