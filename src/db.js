@@ -1,18 +1,8 @@
 import "dotenv/config";
-import { Sequelize } from "sequelize";
-import { readdirSync } from "fs";
-import { basename as _basename, join } from "path";
-const { DB_URL } = process.env;
-import { DataTypes } from "sequelize";
+import { Sequelize, DataTypes } from "sequelize";
 import pg from "pg";
 import { parse } from "pg-connection-string";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
-import { createRequire } from "module";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const require = createRequire(import.meta.url);
+const { DB_URL } = process.env;
 
 const config = parse(DB_URL);
 
@@ -54,22 +44,34 @@ const sequelize = new Sequelize(
       native: false, // lets Sequelize know we can use pg-native for ~30% more speed
     }
 );
-const basename = _basename(__filename);
+import AdminModel from "./models/Admin.js";
+import CategoryModel from "./models/Category.js";
+import CourseModel from "./models/Course.js";
+import CvModel from "./models/Cv.js";
+import DatamakerModel from "./models/DataMaker.js";
+import OrderModel from "./models/Order.js";
+import RecordsModel from "./models/Records.js";
+import ReviewModel from "./models/Review.js";
+import StudentModel from "./models/Student.js";
+import TeacherModel from "./models/Teacher.js";
+import VideoModel from "./models/Video.js";
 
-const modelDefiners = [];
-
-// Leemos todos los archivos de la carpeta Models, los requerimos y agregamos al arreglo modelDefiners
-readdirSync(join(__dirname, "/models"))
-  .filter(
-    (file) =>
-      file.indexOf(".") !== 0 && file !== basename && file.slice(-3) === ".js"
-  )
-  .forEach((file) => {
-    modelDefiners.push(require(join(__dirname, "/models", file)));
-  });
+const modelDefiners = [
+  AdminModel,
+  CategoryModel,
+  CourseModel,
+  CvModel,
+  DatamakerModel,
+  OrderModel,
+  RecordsModel,
+  ReviewModel,
+  StudentModel,
+  TeacherModel,
+  VideoModel,
+];
 
 // Injectamos la conexion (sequelize) a todos los modelos
-modelDefiners.forEach((model) => (model.default || model)(sequelize));
+modelDefiners.forEach((model) => model(sequelize));
 // Capitalizamos los nombres de los modelos ie: product => Product
 let entries = Object.entries(sequelize.models);
 let capsEntries = entries.map((entry) => [
