@@ -14,7 +14,7 @@ const getStudentReview = async (req, res, next) => {
     if (!review) {
       throw new HttpError(404, { flag: false });
     }
-    res.status(200).send({ flag: true });
+    res.status(200).json({ flag: true });
   } catch (error) {
     next(error);
   }
@@ -26,7 +26,7 @@ const getReview = async (req, res, next) => {
     if (review.length === 0) {
       throw new HttpError(404, { message: "Aún no hay reviews" });
     }
-    res.status(200).send(review);
+    res.status(200).json(review);
   } catch (error) {
     next(error);
   }
@@ -43,7 +43,7 @@ const getReviewById = async (req, res, next) => {
     if (review.length === 0) {
       throw new HttpError(404, { message: "El curso aún no tiene reviews" });
     }
-    res.status(200).send(review);
+    res.status(200).json(review);
   } catch (error) {
     next(error);
   }

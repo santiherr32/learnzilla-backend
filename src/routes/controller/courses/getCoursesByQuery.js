@@ -55,7 +55,7 @@ const getCoursesByQuery = async (req, res, category, order) => {
   }
 
   // console.log("111111111111", getAllCourses);
-  res.json(getAllCourses);
+  res.status(200).json(getAllCourses);
 };
 
 export { getCoursesByQuery };

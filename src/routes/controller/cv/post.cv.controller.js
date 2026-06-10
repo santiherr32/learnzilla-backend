@@ -12,7 +12,7 @@ const postCv = async (req, res, next) => {
       teacherId,
       url: urlCv,
     });
-    res.send({ message: "El cv se ha creado correctamente", cvId: cv.id });
+    res.status(200).json({ message: "El cv se ha creado correctamente", cvId: cv.id });
   } catch (error) {
     next(error);
   }

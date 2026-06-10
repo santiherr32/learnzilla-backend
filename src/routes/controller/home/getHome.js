@@ -12,7 +12,7 @@ const getLastFiveCourses = async (req, res, next) => {
       return history.indexOf(element) === index;
     });
     if (uniqueID.length > 5) uniqueID.length = 5; //aca trunco el arreglo para que solo devuelva los primeros 5 registros
-    res.status(200).send(uniqueID);
+    res.status(200).json(uniqueID);
   } catch (error) {
     next(error);
   }

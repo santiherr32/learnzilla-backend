@@ -4,7 +4,7 @@ import { HttpError } from "../../../utils/HttpError.js";
 const getCvs = async (req, res, next) => {
   try {
     const cvs = await Cv.findAll();
-    res.send(cvs);
+    res.status(200).json(cvs);
   } catch (error) {
     next(error);
   }
@@ -17,7 +17,7 @@ const getCv = async (req, res, next) => {
     if (!cv) {
       throw new HttpError(404, { message: "El cv no existe" });
     }
-    res.send(cv);
+    res.status(200).json(cv);
   } catch (error) {
     next(error);
   }

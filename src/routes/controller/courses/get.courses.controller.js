@@ -12,7 +12,7 @@ const getAllCourses = async (req, res, next) => {
   try {
     let getAllCourses = await getAllDataCourses(); //Busca todos los cursos
     // console.log("GET ALL COURSES", getAllCourses)
-    res.json(getAllCourses); //Envía el array con todos los cursos
+    res.status(200).json(getAllCourses); //Envía el array con todos los cursos
     // getInfoCourse(name)
   } catch (error) {
     next(error);
@@ -47,7 +47,7 @@ const getCourseDetail = async (req, res, next) => {
     if (!detail) {
       throw new HttpError(404, { message: "Curso no encontrado" }); //Si no encuentra el curso, retorna un error
     }
-    res.json(detail); //Envía el detalle del curso
+    res.status(200).json(detail); //Envía el detalle del curso
   } catch (error) {
     next(error);
   }
@@ -57,7 +57,7 @@ const getCoursesTeacher = async (req, res, next) => {
   const { teacherId } = req.params;
   try {
     const courses = await getAllDataCoursesOfOneTeacher(teacherId);
-    res.json(courses);
+    res.status(200).json(courses);
   } catch (error) {
     next(error);
   }

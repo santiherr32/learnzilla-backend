@@ -20,7 +20,7 @@ const deteteAdmin = async (req, res, next) => {
         id: id,
       },
     });
-    res.status(200).send({ message: "Administrador Eliminado", admin }); //enviamos el estudiante eliminado
+    res.status(200).json({ message: "Administrador Eliminado", admin }); //enviamos el administrador eliminado
   } catch (error) {
     next(error);
   }

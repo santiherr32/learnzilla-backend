@@ -26,7 +26,7 @@ const updateCourse = async (req, res, next) => {
       },
       { where: { id: id } }
     );
-    res.status(200).send({ message: "Curso actualizado" });
+    res.status(200).json({ message: "Curso actualizado" });
   } catch (error) {
     next(error);
   }

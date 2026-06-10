@@ -22,7 +22,7 @@ const postCategory = async (req, res, next) => {
       }
     }
 
-    res.status(200).send({ message: "Categorias creadas" });
+    res.status(200).json({ message: "Categorias creadas" });
   } catch (error) {
     next(error);
   }

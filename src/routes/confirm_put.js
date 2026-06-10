@@ -24,7 +24,7 @@ router.put("/confirm", async (req, res, next) => {
           },
         }
       );
-      return res.send("Authorization=true!");
+      return res.status(200).json({ authorization: true });
     }
     const verifyEmailTeacher = await Teacher.findOne({ where: { email } });
     if (verifyEmailTeacher) {
@@ -38,9 +38,9 @@ router.put("/confirm", async (req, res, next) => {
           },
         }
       );
-      return res.send("Authorization=true!");
+      return res.status(200).json({ authorization: true });
     } else {
-      return res.send("Algo no funcionó bien");
+      return res.status(400).json({ message: "Algo no funcionó bien" });
     }
   } catch (error) {
     next(error);
@@ -66,7 +66,7 @@ router.post("/forgotpassword", async (req, res, next) => {
           },
         }
       );
-      return res.send({ message: "Contraseña cambiada" });
+      return res.status(200).json({ message: "Contraseña cambiada" });
     }
 
     const verifyEmailTeacher = await Teacher.findOne({ where: { email } });
@@ -83,7 +83,7 @@ router.post("/forgotpassword", async (req, res, next) => {
           },
         }
       );
-      return res.send("Contraseña cambiada");
+      return res.status(200).json({ message: "Contraseña cambiada" });
     }
 
     throw new HttpError(400, "Email incorrecto");
@@ -102,7 +102,7 @@ router.post("/register", async (req, res, next) => {
       password,
       salt,
     });
-    res.json(user);
+    res.status(200).json(user);
   } catch (error) {
     next(error);
   }
@@ -110,7 +110,7 @@ router.post("/register", async (req, res, next) => {
 router.get("/student", async (req, res, next) => {
   try {
     let student = await Student.findAll();
-    res.send(student);
+    res.status(200).json(student);
   } catch (error) {
     next(error);
   }

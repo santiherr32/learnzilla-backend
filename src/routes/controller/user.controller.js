@@ -18,7 +18,7 @@ const loginGoogle = async (req, res, next) => {
         tokenId,
       });
     }
-    res.send(student);
+    res.status(200).json(student);
   } catch (err) {
     next(err);
   }

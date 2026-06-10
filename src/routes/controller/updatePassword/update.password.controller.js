@@ -21,7 +21,7 @@ const updatePassword = async (req, res, next) => {
         }
       );
 
-      return res.status(200).send({
+      return res.status(200).json({
         message: "Contraseña actualizada",
       });
     }
@@ -42,7 +42,7 @@ const updatePassword = async (req, res, next) => {
         }
       );
 
-      return res.status(200).send({
+      return res.status(200).json({
         message: "Contraseña actualizada",
       });
     }

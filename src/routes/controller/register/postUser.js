@@ -93,7 +93,7 @@ const postUser = async (req, res, next) => {
     }
     res
       .status(200)
-      .send({ message: "Usuario Registrado con Éxito", userId: user.id });
+      .json({ message: "Usuario Registrado con Éxito", userId: user.id });
   } catch (error) {
     next(error);
   }

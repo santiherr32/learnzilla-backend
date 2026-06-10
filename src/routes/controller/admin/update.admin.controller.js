@@ -29,7 +29,7 @@ const updateAdmin = async (req, res, next) => {
         },
       }
     );
-    res.status(200).send({ message: "Administrador Actualizado" });
+    res.status(200).json({ message: "Administrador Actualizado" });
   } catch (error) {
     next(error);
   }

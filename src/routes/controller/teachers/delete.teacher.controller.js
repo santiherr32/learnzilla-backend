@@ -19,7 +19,7 @@ const deteteTeacher = async (req, res, next) => {
         id: id,
       },
     });
-    res.status(200).send({ message: "Profesor Eliminado", teacher }); //enviamos el profesor eliminado
+    res.status(200).json({ message: "Profesor Eliminado", teacher }); //enviamos el profesor eliminado
   } catch (error) {
     next(error);
   }

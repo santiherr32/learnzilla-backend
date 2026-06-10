@@ -53,7 +53,7 @@ const stripePay = async (req, res, next) => {
           },
         }
       );
-      return res.status(200).send({ message: "Pago realizado con exito" });
+      return res.status(200).json({ message: "Pago realizado con exito" });
     } else {
       throw new HttpError(500, { message: "Ha ocurrido un error" });
     }
@@ -87,7 +87,7 @@ const generateOrder = async (req, res, next) => {
 
     res
       .status(200)
-      .send({ message: "Orden generada con exito", orderId: order.id });
+      .json({ message: "Orden generada con exito", orderId: order.id });
   } catch (error) {
     next(error);
   }

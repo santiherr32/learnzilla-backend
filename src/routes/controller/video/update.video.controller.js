@@ -24,7 +24,7 @@ const updateVideo = async (req, res, next) => {
     );
     res
       .status(200)
-      .send({ message: "El video se ha actualizado correctamente" });
+      .json({ message: "El video se ha actualizado correctamente" });
   } catch (error) {
     next(error);
   }

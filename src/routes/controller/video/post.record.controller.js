@@ -7,7 +7,7 @@ const postRecord = async (req, res, next) => {
       idVideo,
       idStudent,
     });
-    res.status(200).send(newRecord);
+    res.status(200).json(newRecord);
   } catch (error) {
     next(error);
   }

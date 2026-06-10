@@ -16,7 +16,7 @@ const deleteVideo = async (req, res, next) => {
     });
     res
       .status(200)
-      .send({ message: "El video se ha eliminado correctamente", video });
+      .json({ message: "El video se ha eliminado correctamente", video });
   } catch (error) {
     next(error);
   }

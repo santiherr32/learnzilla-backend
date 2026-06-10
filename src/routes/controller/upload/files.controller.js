@@ -16,7 +16,7 @@ let storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 const homePage = (req, res) => {
-  return res.send("this is de the home page");
+  return res.status(200).json({ message: "this is de the home page" });
 };
 
 const uploadFiles = (req, _res, _next) => {

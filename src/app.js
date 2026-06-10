@@ -39,7 +39,7 @@ server.use((err, req, res, _next) => {
   const status = err.status || 500;
   const response = err.body || { message: err.message || "Error interno del servidor" };
   console.error(err);
-  res.status(status).send(response);
+  res.status(status).json(response);
 });
 
 export default server;

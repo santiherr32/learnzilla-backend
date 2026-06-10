@@ -20,7 +20,7 @@ const deteteStudent = async (req, res, next) => {
         id: id,
       },
     });
-    res.status(200).send({ message: "Estudiante Eliminado", student }); //enviamos el estudiante eliminado
+    res.status(200).json({ message: "Estudiante Eliminado", student });
   } catch (error) {
     next(error);
   }

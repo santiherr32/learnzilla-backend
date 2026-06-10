@@ -29,7 +29,7 @@ const updateTeacher = async (req, res, next) => {
         },
       }
     );
-    res.status(200).send({ message: "Profesor Actualizado" });
+    res.status(200).json({ message: "Profesor Actualizado" });
   } catch (error) {
     next(error);
   }

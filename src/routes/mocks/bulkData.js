@@ -184,7 +184,7 @@ const dataMaker = async (req, res, next) => {
     if (data.length > 0)
       return res
         .status(400)
-        .send({ message: "Ya se ha creado data anteriormente" });
+        .json({ message: "Ya se ha creado data anteriormente" });
     await Datamaker.create({ called: true });
     await categoryMaker();
     await teacherMaker();
@@ -195,7 +195,7 @@ const dataMaker = async (req, res, next) => {
     await reviewMaker(studentId);
     await videoMaker();
     await buyMaker(studentId);
-    res.status(200).send({ message: "Data creada" });
+    res.status(200).json({ message: "Data creada" });
   } catch (error) {
     next(error);
   }

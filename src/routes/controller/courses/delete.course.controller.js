@@ -20,7 +20,7 @@ const deleteCourse = async (req, res, next) => {
     });
     res
       .status(200)
-      .send({ message: "Curso eliminado con Éxito", course: course });
+      .json({ message: "Curso eliminado con Éxito", course: course });
   } catch (error) {
     next(error);
   }

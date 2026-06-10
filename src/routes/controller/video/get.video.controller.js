@@ -7,7 +7,7 @@ const getAllVideos = async (req, res, next) => {
       where: {},
       attributes: ["id", "title", "description", "url", "FKcourseID", "img"],
     });
-    res.status(200).send(videos);
+    res.status(200).json(videos);
   } catch (error) {
     next(error);
   }
@@ -23,7 +23,7 @@ const getVideoDetail = async (req, res, next) => {
     if (!video) {
       throw new HttpError(404, { message: "El video no existe" });
     }
-    res.status(200).send(video);
+    res.status(200).json(video);
   } catch (error) {
     next(error);
   }
@@ -39,7 +39,7 @@ const getCourseVideos = async (req, res, next) => {
     if (!videos) {
       throw new HttpError(404, { message: "No hay videos" });
     }
-    res.status(200).send(videos);
+    res.status(200).json(videos);
   } catch (error) {
     next(error);
   }

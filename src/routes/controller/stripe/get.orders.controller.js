@@ -4,7 +4,7 @@ import { HttpError } from "../../../utils/HttpError.js";
 const getOrders = async (req, res, next) => {
   try {
     const orders = await Order.findAll({});
-    res.status(200).send(orders);
+    res.status(200).json(orders);
   } catch (error) {
     next(error);
   }
@@ -21,7 +21,7 @@ const getOrder = async (req, res, next) => {
     if (!order) {
       throw new HttpError(404, { message: "No se encontro el pedido" });
     }
-    res.status(200).send(order);
+    res.status(200).json(order);
   } catch (error) {
     next(error);
   }

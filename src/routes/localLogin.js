@@ -12,7 +12,7 @@ router.post("/", async (req, res, next) => {
   const { email, password } = req.body;
 
   if (email === EMAIL_ADMIN && password === PASSWORD_ADMIN) {
-    return res.status(200).send({ authorization: true, role: "admin", id: 1 });
+    return res.status(200).json({ authorization: true, role: "admin", id: 1 });
   }
 
   try {
@@ -42,7 +42,7 @@ router.post("/", async (req, res, next) => {
     const { newPassword } = await verifyHashedPassword(password, DbUser.salt);
 
     if (DbUser.password === newPassword) {
-      return res.status(200).send({ authorization: true, role, id: DbUser.id });
+      return res.status(200).json({ authorization: true, role, id: DbUser.id });
     }
 
     throw new HttpError(401, { authorization: false });

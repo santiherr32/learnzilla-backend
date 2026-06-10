@@ -21,7 +21,7 @@ const postVideo = async (req, res, next) => {
       img,
     });
     // console.log('llegue  a video create',FK);
-    res.status(200).send({
+    res.status(200).json({
       message: "El video se ha creado correctamente",
       videoId: video.id,
     });
