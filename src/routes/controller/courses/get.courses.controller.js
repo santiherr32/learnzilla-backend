@@ -1,35 +1,34 @@
-const { Course } = require("../../../db.js");
+import { Course } from "../../../db.js";
 
-const { filterCategory } = require("../middleware");
-const { getCoursesByQuery } = require("./getCoursesByQuery");
-const {
+import { getCoursesByQuery } from "./getCoursesByQuery.js";
+import {
   getAllDataCourses,
   getAllDataCoursesOfOneTeacher,
-} = require("./getAllDataCourses");
-const { getInfoCourse } = require("./getInfoCourse");
+} from "./getAllDataCourses.js";
+import { getInfoCourse } from "./getInfoCourse.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
-const getAllCourses = async (req, res) => {
+const getAllCourses = async (req, res, next) => {
   try {
     let getAllCourses = await getAllDataCourses(); //Busca todos los cursos
     // console.log("GET ALL COURSES", getAllCourses)
-    res.json(getAllCourses); //Envía el array con todos los cursos
+    res.status(200).json(getAllCourses); //Envía el array con todos los cursos
     // getInfoCourse(name)
   } catch (error) {
-    console.error(error);
-    res.status(404).send(error);
+    next(error);
   }
 };
 
-const getCourses = async (req, res) => {
+const getCourses = async (req, res, next) => {
   const { category, order } = req.query;
   if (category === undefined && order === undefined) {
-    getAllCourses(req, res);
+    getAllCourses(req, res, next);
   } else {
     getCoursesByQuery(req, res, category, order);
   }
 };
 
-const getCourseDetail = async (req, res) => {
+const getCourseDetail = async (req, res, next) => {
   //Obtiene el detalle de un curso
   const { id } = req.params;
   try {
@@ -42,42 +41,27 @@ const getCourseDetail = async (req, res) => {
         },
       });
     } catch (error) {
-      return res.status(404).send({ message: "Curso no encontrado" }); //Si no encuentra el curso, retorna un error
+      return next(error);
     }
     const detail = await getInfoCourse(name.name); //Obtiene el detalle del curso
     if (!detail) {
-      return res.status(404).send({ message: "Curso no encontrado" }); //Si no encuentra el curso, retorna un error
+      throw new HttpError(404, { message: "Curso no encontrado" }); //Si no encuentra el curso, retorna un error
     }
-    res.json(detail); //Envía el detalle del curso
+    res.status(200).json(detail); //Envía el detalle del curso
   } catch (error) {
-    res.status(404).send(error);
+    next(error);
   }
 };
 
-const getCoursesTeacher = async (req, res) => {
+const getCoursesTeacher = async (req, res, next) => {
   const { teacherId } = req.params;
   try {
     const courses = await getAllDataCoursesOfOneTeacher(teacherId);
-    res.json(courses);
+    res.status(200).json(courses);
   } catch (error) {
-    console.error(error);
-    res.status(404).send(error);
+    next(error);
   }
 };
 
-//!no encontre quien llama a este metodo
-// const getCourseById = async (id) => {
-//   try {
-//     const courseById = await Course.findByPk(id.toUpperCase());
-//     // console.log(courseById);
-//     return courseById;
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
 
-module.exports = {
-  getCourses,
-  getCourseDetail,
-  getCoursesTeacher,
-};
+export { getCourses, getCourseDetail, getCoursesTeacher };

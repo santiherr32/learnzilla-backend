@@ -1,24 +1,18 @@
-require("dotenv").config();
-const { Router } = require("express");
+import { Router } from "express";
 const {
-  BASE,
-  ITERATIONS,
-  LONG_ENCRYPTION,
-  ENCRYPT_ALGORITHM,
   EMAIL_ADMIN,
   PASSWORD_ADMIN,
 } = process.env;
-const crypto = require("crypto");
+import { verifyHashedPassword } from "../utils/PasswordHashing.js";
 const router = Router();
-const { Student, Teacher, Admin } = require("../db");
+import { Student, Teacher, Admin } from "../db.js";
+import { HttpError } from "../utils/HttpError.js";
 
 router.post("/", async (req, res, next) => {
   const { email, password } = req.body;
 
   if (email === EMAIL_ADMIN && password === PASSWORD_ADMIN) {
-    return res
-      .status(200)
-      .send({ authorization: true, role: "admin", id: 0001 });
+    return res.status(200).json({ authorization: true, role: "admin", id: 1 });
   }
 
   try {
@@ -39,32 +33,22 @@ router.post("/", async (req, res, next) => {
           where: { email: email.trim().toLowerCase() },
         }); //buscamos el usuario en la tabla de administradores
         role = "admin";
-        if (!DbUser)
-          return res.status(404).send({ message: "usuario invalido" });
+        if (!DbUser) {
+          throw new HttpError(401, { message: "usuario invalido" });
+        }
       }
     }
-    crypto.pbkdf2(
-      //utilizamos la libreria crypto para encriptar la contraseña
-      password, //contraseña a encriptar
-      DbUser.salt, //salt guardado en base de datos
-      parseInt(ITERATIONS), //iteraciones
-      parseInt(LONG_ENCRYPTION), //longitud de la contraseña encriptada
-      ENCRYPT_ALGORITHM, //algoritmo de encriptación
-      async (error, key) => {
-        const encryptedPassword = key.toString(BASE); //encriptamos la contraseña
-        if (DbUser.password === encryptedPassword) {
-          //comparamos la contraseña encriptada con la guardada en la base de datos
-          return res
-            .status(200)
-            .send({ authorization: true, role: role, id: DbUser.id });
-        }
-        return res.status(404).send({ authorization: false });
-      }
-    );
+
+    const { newPassword } = await verifyHashedPassword(password, DbUser.salt);
+
+    if (DbUser.password === newPassword) {
+      return res.status(200).json({ authorization: true, role, id: DbUser.id });
+    }
+
+    throw new HttpError(401, { authorization: false });
   } catch (error) {
-    console.error(error);
-    res.status(404).send(error);
+    next(error);
   }
 });
 
-module.exports = router;
+export default router;

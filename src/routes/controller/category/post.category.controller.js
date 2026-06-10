@@ -1,4 +1,4 @@
-const { Category } = require("../../../db.js");
+import { Category } from "../../../db.js";
 
 const postCategory = async (req, res, next) => {
   const { name } = req.body; //name es un array de categorias o una sola categoria
@@ -21,14 +21,11 @@ const postCategory = async (req, res, next) => {
         });
       }
     }
-    // const categoriesCreated = await Category.findAll(); //Busca todas las categorias
-    res.status(200).send({ message: "Categorias creadas" });
+
+    res.status(200).json({ message: "Categorias creadas" });
   } catch (error) {
-    console.log(error);
-    res.status(404).send(error);
+    next(error);
   }
 };
 
-module.exports = {
-  postCategory,
-};
+export { postCategory, };

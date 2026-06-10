@@ -1,6 +1,7 @@
-const { Video } = require("../../../db");
+import { Video } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
-const deleteVideo = async (req, res) => {
+const deleteVideo = async (req, res, next) => {
   const { id } = req.params;
   try {
     const video = await Video.findOne({
@@ -8,20 +9,17 @@ const deleteVideo = async (req, res) => {
       attributes: ["title", "description", "url", "FKcourseID"],
     });
     if (!video) {
-      return res.status(404).send({ message: "El video no existe" });
+      throw new HttpError(404, { message: "El video no existe" });
     }
     await Video.destroy({
       where: { id },
     });
     res
       .status(200)
-      .send({ message: "El video se ha eliminado correctamente", video });
+      .json({ message: "El video se ha eliminado correctamente", video });
   } catch (error) {
-    console.log(error);
-    res.status(404).send(error);
+    next(error);
   }
 };
 
-module.exports = {
-  deleteVideo,
-};
+export { deleteVideo, };

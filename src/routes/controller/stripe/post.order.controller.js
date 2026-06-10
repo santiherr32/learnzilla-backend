@@ -1,9 +1,11 @@
-require("dotenv").config();
+import "dotenv/config";
 const { STRIPE_KEY } = process.env;
-const { Student, Course, Order } = require("../../../db.js");
-const stripe = require("stripe")(STRIPE_KEY);
+import { Student, Order } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
+import Stripe from "stripe";
+const stripe = Stripe(STRIPE_KEY);
 
-const stripePay = async (req, res) => {
+const stripePay = async (req, res, next) => {
   const { email, token, orderId } = req.body;
 
   try {
@@ -13,7 +15,7 @@ const stripePay = async (req, res) => {
       },
     });
     if (!order) {
-      res.status(404).send({ message: "No se encontro la orden" });
+      throw new HttpError(404, { message: "No se encontro la orden" });
     }
     const student = await Student.findOne({
       where: {
@@ -21,7 +23,7 @@ const stripePay = async (req, res) => {
       },
     });
     if (!student) {
-      res.status(404).send({ message: "No se encontro el estudiante" });
+      throw new HttpError(404, { message: "No se encontro el estudiante" });
     }
 
     let customer = await stripe.customers.create({
@@ -40,8 +42,7 @@ const stripePay = async (req, res) => {
     });
     if (charge) {
       //Si se creo el cargo
-      // return res.status(200).send(charge);
-      student.addCourse(order.arrayCoursesId); //Agrega los cursos al estudiante
+      await student.addCourse(order.arrayCoursesId); //Agrega los cursos al estudiante
       await Order.update(
         {
           status: true,
@@ -52,17 +53,17 @@ const stripePay = async (req, res) => {
           },
         }
       );
-      return res.status(200).send({ message: "Pago realizado con exito" });
+      return res.status(200).json({ message: "Pago realizado con exito" });
     } else {
-      return res.status(404).send({ message: "Ha ocurrido un error" });
+      throw new HttpError(500, { message: "Ha ocurrido un error" });
     }
   } catch (error) {
-    console.log(error);
-    res.status(500).send(error);
+    error.status = 500;
+    next(error);
   }
 };
 
-const generateOrder = async (req, res) => {
+const generateOrder = async (req, res, next) => {
   const { id, studentId, coursesId, totalAmount, status } = req.body;
 
   try {
@@ -73,11 +74,9 @@ const generateOrder = async (req, res) => {
       },
     });
     if (!student) {
-      //Si no existe el estudiante
-      console.log("No existe el estudiante");
-      return res.status(404).send({ message: "No se encontro el estudiante" });
+      throw new HttpError(404, { message: "No se encontro el estudiante" });
     }
-    // student.addCourse(coursesId); //Agrega los cursos al estudiante
+
     const order = await Order.create({
       id: id,
       studentId: studentId,
@@ -85,14 +84,13 @@ const generateOrder = async (req, res) => {
       arrayCoursesId: coursesId,
       status: status,
     });
-    console.log("Orden creada");
+
     res
       .status(200)
-      .send({ message: "Orden generada con exito", orderId: order.id });
+      .json({ message: "Orden generada con exito", orderId: order.id });
   } catch (error) {
-    console.log(error);
-    res.status(404).send(error);
+    next(error);
   }
 };
 
-module.exports = { stripePay, generateOrder };
+export { stripePay, generateOrder };

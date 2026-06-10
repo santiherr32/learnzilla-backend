@@ -1,5 +1,5 @@
 //Fución para los filtros de los cursos
-const { getAllDataCourses } = require("./getAllDataCourses");
+import { getAllDataCourses } from "./getAllDataCourses.js";
 
 const getCoursesByQuery = async (req, res, category, order) => {
   //name, category, order
@@ -50,16 +50,12 @@ const getCoursesByQuery = async (req, res, category, order) => {
     });
   }
   if (category) {
-    getAllCourses = await getAllCourses.filter((e) =>
-      e.category.includes(category)
-    );
+    getAllCourses = getAllCourses.filter((e) => e.category.includes(category));
     // console.log("filtro o no filtro? caralhoooo")
   }
 
   // console.log("111111111111", getAllCourses);
-  res.json(getAllCourses);
+  res.status(200).json(getAllCourses);
 };
 
-module.exports = {
-  getCoursesByQuery,
-};
+export { getCoursesByQuery };

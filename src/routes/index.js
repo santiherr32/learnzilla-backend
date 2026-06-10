@@ -1,25 +1,25 @@
-const { Router } = require("express");
+import { Router } from "express";
 // Importar todos los routers;
-const register = require("./register.js");
-const user = require("./user.routes");
-const confirmput = require("./confirm_put.js");
+import register from "./register.js";
+import user from "./user.routes.js";
+import confirmput from "./confirm_put.js";
 
 const router = Router();
 
-const login = require("./localLogin.js");
-const fakeCourses = require("./mocksCourses.js");
-const courses = require("./courses.js");
-const category = require("./category.js");
-const review = require("./review.js");
-const video = require("./video.js");
-const home = require("./home.js");
-const admins = require("./admins.js");
-const students = require("./students.js");
-const teachers = require("./teachers.js");
-const stripe = require("./stripe.js");
-const dataMaker = require("./dataMaker.js");
-const cv = require("./cv.js");
-const updatePassword = require("./updatePassword.js");
+import login from "./localLogin.js";
+import fakeCourses from "./mocksCourses.js";
+import courses from "./courses.js";
+import category from "./category.js";
+import review from "./review.js";
+import video from "./video.js";
+import home from "./home.js";
+import admins from "./admins.js";
+import students from "./students.js";
+import teachers from "./teachers.js";
+import stripe from "./stripe.js";
+import dataMaker from "./dataMaker.js";
+import cv from "./cv.js";
+import updatePassword from "./updatePassword.js";
 
 // Configurar los routers
 router.use("/confirmput", confirmput);
@@ -42,4 +42,4 @@ router.use("/datamaker", dataMaker); // ----> esta ruta es solo para cargar info
 /////////////////USER////////////////
 router.use("/user", user);
 
-module.exports = router;
+export default router;

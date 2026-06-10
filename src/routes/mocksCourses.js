@@ -1,19 +1,20 @@
-const { Router } = require("express");
+import { Router } from "express";
 const router = Router();
-const { courseMocks } = require("./mocks/mocksDataCourses.js");
+import { courseMocks } from "./mocks/mocksDataCourses.js";
+import { HttpError } from "../utils/HttpError.js";
 
 router.get("/", (req, res) => {
-  res.status(200).send(courseMocks);
+  res.status(200).json(courseMocks);
 });
 
 router.get("/:id", (req, res) => {
   const { id } = req.params;
-  const course = courseMocks.find((course) => course.id === parseInt(id));
+  const course = courseMocks.find((course) => course.id === parseInt(id, 10));
   if (course) {
-    res.status(200).send(course);
+    res.status(200).json(course);
   } else {
-    res.status(404).send({ message: "No existe el curso" });
+    throw new HttpError(404, { message: "No existe el curso" });
   }
 });
 
-module.exports = router;
+export default router;

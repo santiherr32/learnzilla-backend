@@ -1,19 +1,19 @@
-const { Video } = require("../../../db");
+import { Video } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
-const getAllVideos = async (req, res) => {
+const getAllVideos = async (req, res, next) => {
   try {
     const videos = await Video.findAll({
       where: {},
       attributes: ["id", "title", "description", "url", "FKcourseID", "img"],
     });
-    res.status(200).send(videos);
+    res.status(200).json(videos);
   } catch (error) {
-    console.error(error);
-    res.status(404).send(error);
+    next(error);
   }
 };
 
-const getVideoDetail = async (req, res) => {
+const getVideoDetail = async (req, res, next) => {
   const { id } = req.params;
   try {
     const video = await Video.findOne({
@@ -21,16 +21,15 @@ const getVideoDetail = async (req, res) => {
       attributes: ["id", "title", "description", "url", "FKcourseID", "img"],
     });
     if (!video) {
-      return res.status(404).send({ message: "El video no existe" });
+      throw new HttpError(404, { message: "El video no existe" });
     }
-    res.status(200).send(video);
+    res.status(200).json(video);
   } catch (error) {
-    console.error(error);
-    res.status(404).send(error);
+    next(error);
   }
 };
 
-const getCourseVideos = async (req, res) => {
+const getCourseVideos = async (req, res, next) => {
   const { courseId } = req.params;
   try {
     const videos = await Video.findAll({
@@ -38,17 +37,14 @@ const getCourseVideos = async (req, res) => {
       attributes: ["id", "title", "description", "url", "FKcourseID", "img"],
     });
     if (!videos) {
-      return res.status(404).send({ message: "No hay videos" });
+      throw new HttpError(404, { message: "No hay videos" });
     }
-    res.status(200).send(videos);
+    res.status(200).json(videos);
   } catch (error) {
-    console.log(error);
-    res.status(404).send(error);
+    next(error);
   }
 };
 
-module.exports = {
-  getAllVideos,
+export { getAllVideos,
   getVideoDetail,
-  getCourseVideos,
-};
+  getCourseVideos, };

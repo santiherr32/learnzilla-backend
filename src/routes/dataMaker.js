@@ -1,8 +1,8 @@
-const { Router } = require("express");
+import { Router } from "express";
 const router = Router();
 
-const { dataMaker } = require("./mocks/bulkData");
+import dataMaker from "./mocks/bulkData.js";
 
 router.post("/", dataMaker);
 
-module.exports = router;
+export default router;

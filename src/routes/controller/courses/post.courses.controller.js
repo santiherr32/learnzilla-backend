@@ -1,7 +1,8 @@
-const { Course, Teacher } = require("../../../db.js");
-const { getCategoryId, getCategoryNames } = require("../getCategoryId");
+import { Course, Teacher } from "../../../db.js";
+import { getCategoryId, getCategoryNames } from "../getCategoryId.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
-const postCourses = async (req, res) => {
+const postCourses = async (req, res, next) => {
   //*email is of the teacher, category must be an array
   let { name, description, email, img, price, category, role } = req.body;
   if (!img) img = "https://placeimg.com/240/120/tech";
@@ -29,17 +30,14 @@ const postCourses = async (req, res) => {
       });
       const categoryID = await getCategoryId(category); //Busca el id de las categorias
       // console.log('category id in post course:',categoryID);
-      courseCreated.addCategory(categoryID); //Agrega las categorias al curso
-      res.status(200).send({ message: "El curso se ha creado correctamente" });
+      await courseCreated.addCategory(categoryID); //Agrega las categorias al curso
+      res.status(200).json({ message: "El curso se ha creado correctamente" });
     } else {
-      res.status(400).send({ message: "El curso ya existe" });
+      throw new HttpError(409, { message: "El curso ya existe" });
     }
   } catch (error) {
-    console.error(error);
-    res.status(404).send(error);
+    next(error);
   }
 };
 
-module.exports = {
-  postCourses,
-};
+export { postCourses };

@@ -1,6 +1,7 @@
-const { Course, Student, Review } = require("../../../db.js");
+import { Course, Student, Review } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
-const postReview = async (req, res) => {
+const postReview = async (req, res, next) => {
   const { courseId, studentId, score } = req.body;
   try {
     const FKCourse = await Course.findOne({
@@ -9,7 +10,7 @@ const postReview = async (req, res) => {
       },
     });
     if (!FKCourse) {
-      return res.status(404).send({ message: "El curso no existe" });
+      throw new HttpError(404, { message: "El curso no existe" });
     }
     const FKStudent = await Student.findOne({
       where: {
@@ -17,7 +18,7 @@ const postReview = async (req, res) => {
       },
     });
     if (!FKStudent) {
-      return res.status(404).send({ message: "El estudiante no existe" });
+      throw new HttpError(404, { message: "El estudiante no existe" });
     }
     const flag = await Review.findOne({
       where: {
@@ -34,21 +35,19 @@ const postReview = async (req, res) => {
           FKstudentID: FKStudent.id,
           FKcourseID: FKCourse.id,
         });
-        res.status(200).send({
-          message: "La review se ha creado correctamente",
+        res.status(200).json({
+          message: "Se ha añadido la reseña correctamente",
           flag: review.flag,
         });
       } catch (error) {
-        res.status(404).send(error);
+        next(error);
       }
     } else {
-      res.status(404).send({ message: "Ya has calificado este curso" });
+      throw new HttpError(409, { message: "Ya has calificado este curso" });
     }
   } catch (error) {
-    res.status(404).send(error);
+    next(error);
   }
 };
 
-module.exports = {
-  postReview,
-};
+export { postReview, };

@@ -1,20 +1,16 @@
-const { Records } = require("../../../db");
+import { Records } from "../../../db.js";
 
-const postRecord = async (req, res) => {
+const postRecord = async (req, res, next) => {
   try {
     const { idVideo, idStudent } = req.query;
-    //*If exists a query parameter add the record to stdent_record table
     const newRecord = await Records.create({
       idVideo,
       idStudent,
     });
-    res.status(200).send(newRecord);
+    res.status(200).json(newRecord);
   } catch (error) {
-    console.error(error);
-    res.status(404).send(error);
+    next(error);
   }
 };
 
-module.exports = {
-  postRecord,
-};
+export { postRecord, };

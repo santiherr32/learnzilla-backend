@@ -1,28 +1,27 @@
-const { Cv } = require("../../../db");
+import { Cv } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
-const getCvs = async (req, res) => {
+const getCvs = async (req, res, next) => {
   try {
     const cvs = await Cv.findAll();
-    res.send(cvs);
+    res.status(200).json(cvs);
   } catch (error) {
-    res.status(404).send(error);
+    next(error);
   }
 };
 
-const getCv = async (req, res) => {
+const getCv = async (req, res, next) => {
   const { id } = req.params;
   try {
     const cv = await Cv.findByPk(id);
     if (!cv) {
-      return res.status(404).send({ message: "El cv no existe" });
+      throw new HttpError(404, { message: "El cv no existe" });
     }
-    res.send(cv);
+    res.status(200).json(cv);
   } catch (error) {
-    res.status(404).send(error);
+    next(error);
   }
 };
 
-module.exports = {
-  getCvs,
-  getCv,
-};
+export { getCvs,
+  getCv, };

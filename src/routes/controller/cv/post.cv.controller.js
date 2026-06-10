@@ -1,22 +1,21 @@
-const { Cv, Teacher } = require("../../../db");
+import { Cv, Teacher } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
-const postCv = async (req, res) => {
+const postCv = async (req, res, next) => {
   const { teacherId, urlCv } = req.body;
   try {
     const teacher = await Teacher.findByPk(teacherId);
     if (!teacher) {
-      return res.status(404).send({ message: "El profesor es inválido" });
+      throw new HttpError(404, { message: "El profesor es inválido" });
     }
     const cv = await Cv.create({
       teacherId,
       url: urlCv,
     });
-    res.send({ message: "El cv se ha creado correctamente", cvId: cv.id });
+    res.status(200).json({ message: "El cv se ha creado correctamente", cvId: cv.id });
   } catch (error) {
-    res.status(404).send(error);
+    next(error);
   }
 };
 
-module.exports = {
-  postCv,
-};
+export { postCv, };

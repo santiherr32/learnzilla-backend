@@ -1,4 +1,4 @@
-const { Records } = require("../../../db.js");
+import { Records } from "../../../db.js";
 
 const getLastFiveCourses = async (req, res, next) => {
   try {
@@ -7,18 +7,15 @@ const getLastFiveCourses = async (req, res, next) => {
       where: { idStudent: idStudent },
       attributes: ["idVideo"], //saco el atributo id video
     });
-    //*take out duplicate idVideos
+
     let uniqueID = history.filter((element, index) => {
       return history.indexOf(element) === index;
     });
     if (uniqueID.length > 5) uniqueID.length = 5; //aca trunco el arreglo para que solo devuelva los primeros 5 registros
-    res.status(200).send(uniqueID);
+    res.status(200).json(uniqueID);
   } catch (error) {
-    console.error(error);
-    res.status(404).send(error);
+    next(error);
   }
 };
 
-module.exports = {
-  getLastFiveCourses,
-};
+export { getLastFiveCourses, };

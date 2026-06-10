@@ -1,10 +1,9 @@
-require("dotenv").config();
-const { CLIENT_ID } = process.env;
-const { Student } = require("../../db");
+import "dotenv/config";
 
-const clientId = CLIENT_ID;
+import { Student } from "../../db.js";
 
-const loginGoogle = async (req, res) => {
+
+const loginGoogle = async (req, res, next) => {
   const { firstName, lastName, email, tokenId } = req.body;
   try {
     let student = await Student.findOne({
@@ -19,12 +18,10 @@ const loginGoogle = async (req, res) => {
         tokenId,
       });
     }
-    res.send(student);
+    res.status(200).json(student);
   } catch (err) {
-    res.send(err);
+    next(err);
   }
 };
 
-module.exports = {
-  loginGoogle,
-};
+export { loginGoogle, };

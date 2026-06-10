@@ -1,17 +1,14 @@
-const { Router } = require("express");
+import { Router } from "express";
 
 const router = Router();
 
-const {
-  getAdmin,
-  getAdmins,
-} = require("./controller/admin/get.admin.controller");
-const { updateAdmin } = require("./controller/admin/update.admin.controller");
-const { deteteAdmin } = require("./controller/admin/delete.admin.controller");
+import { getAdmin, getAdmins } from "./controller/admin/get.admin.controller.js";
+import { updateAdmin } from "./controller/admin/update.admin.controller.js";
+import { deteteAdmin } from "./controller/admin/delete.admin.controller.js";
 
 router.get("/", getAdmins);
 router.get("/detail/:id", getAdmin);
 router.put("/update/:id", updateAdmin);
 router.delete("/delete/:id", deteteAdmin);
 
-module.exports = router;
+export default router;

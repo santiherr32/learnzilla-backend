@@ -1,6 +1,7 @@
-const { Admin } = require("../../../db.js");
+import { Admin } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
-const updateAdmin = async (req, res) => {
+const updateAdmin = async (req, res, next) => {
   const { id } = req.params;
   const { name, lastName, email, avatar } = req.body;
   try {
@@ -12,7 +13,7 @@ const updateAdmin = async (req, res) => {
       attributes: ["name", "lastName", "email", "avatar"], //sacamos solo los atributos a comparar
     });
     if (!admin) {
-      return res.status(404).send({ message: "Administrador no encontrado" });
+      throw new HttpError(404, { message: "Administrador no encontrado" });
     }
     await Admin.update(
       //actualizamos el administrador, solo si el atributo que se quiere actualizar no esta vacio
@@ -28,13 +29,10 @@ const updateAdmin = async (req, res) => {
         },
       }
     );
-    res.status(200).send({ message: "Administrador Actualizado" });
+    res.status(200).json({ message: "Administrador Actualizado" });
   } catch (error) {
-    console.error(error);
-    res.status(404).send({ message: "Error al actualizar el administrador" });
+    next(error);
   }
 };
 
-module.exports = {
-  updateAdmin,
-};
+export { updateAdmin, };

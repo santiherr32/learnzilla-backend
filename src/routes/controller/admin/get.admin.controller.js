@@ -1,18 +1,18 @@
-const { Admin } = require("../../../db");
+import { Admin } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
-const getAdmins = async (req, res) => {
+const getAdmins = async (req, res, next) => {
   try {
     let admins = await Admin.findAll({
       attributes: ["id", "name", "lastName", "email", "avatar", "role"], //solo vamos a enviar estos atributos al front
     });
     res.status(200).json(admins);
   } catch (err) {
-    console.error(err);
-    res.status(404).send({ message: "Error al obtener los administradores" });
+    next(err);
   }
 };
 
-const getAdmin = async (req, res) => {
+const getAdmin = async (req, res, next) => {
   const { id } = req.params;
   try {
     let admin = await Admin.findOne({
@@ -22,16 +22,13 @@ const getAdmin = async (req, res) => {
       attributes: ["id", "name", "lastName", "email", "avatar", "role"], //solo vamos a enviar estos atributos al front
     });
     if (!admin) {
-      return res.status(404).send({ message: "Administrador no encontrado" });
+      throw new HttpError(404, { message: "Administrador no encontrado" });
     }
     res.status(200).json(admin);
   } catch (err) {
-    console.error(err);
-    res.status(404).send({ message: "Error al obtener el adminstrador" });
+    next(err);
   }
 };
 
-module.exports = {
-  getAdmins,
-  getAdmin,
-};
+export { getAdmins,
+  getAdmin, };

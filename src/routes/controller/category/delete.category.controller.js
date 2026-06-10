@@ -1,6 +1,7 @@
-const { Category } = require("../../../db.js");
+import { Category } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
-const deleteCategory = async (req, res) => {
+const deleteCategory = async (req, res, next) => {
   const { id } = req.params;
   try {
     const category = await Category.findOne({
@@ -10,7 +11,7 @@ const deleteCategory = async (req, res) => {
       },
     });
     if (!category) {
-      res.status(404).send({ message: "Categoria no encontrada" });
+      throw new HttpError(404, { message: "Categoria no encontrada" });
     }
     await category.destroy({
       //eliminamos la categoria
@@ -20,12 +21,10 @@ const deleteCategory = async (req, res) => {
     });
     res
       .status(200)
-      .send({ message: "Categoria eliminada", category: category.name }); //devolvemos la categoria eliminada
+      .json({ message: "Categoria eliminada", category: category.name });
   } catch (error) {
-    res.status(404).send(error);
+    next(error);
   }
 };
 
-module.exports = {
-  deleteCategory,
-};
+export { deleteCategory, };

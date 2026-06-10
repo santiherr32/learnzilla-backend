@@ -1,18 +1,18 @@
-const { Teacher } = require("../../../db.js");
+import { Teacher } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
-const getTeachers = async (req, res) => {
+const getTeachers = async (req, res, next) => {
   try {
     let teachers = await Teacher.findAll({
       attributes: ["id", "name", "lastName", "email", "avatar", "role"], //solo vamos a enviar estos atributos al front
     });
     res.status(200).json(teachers);
   } catch (err) {
-    console.error(err);
-    res.status(404).send({ message: "Error al obtener los profesores" });
+    next(err);
   }
 };
 
-const getTeacher = async (req, res) => {
+const getTeacher = async (req, res, next) => {
   const { id } = req.params;
   try {
     let teacher = await Teacher.findOne({
@@ -22,16 +22,13 @@ const getTeacher = async (req, res) => {
       attributes: ["id", "name", "lastName", "email", "avatar", "role"], //solo vamos a enviar estos atributos al front
     });
     if (!teacher) {
-      return res.status(404).send({ message: "Profesor no encontrado" });
+      throw new HttpError(404, { message: "Profesor no encontrado" });
     }
     res.status(200).json(teacher);
   } catch (err) {
-    console.error(err);
-    res.status(404).send({ message: "Error al obtener el profesor" });
+    next(err);
   }
 };
 
-module.exports = {
-  getTeachers,
-  getTeacher,
-};
+export { getTeachers,
+  getTeacher, };

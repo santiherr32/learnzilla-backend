@@ -1,18 +1,8 @@
-const { Student, Teacher, Admin } = require("../../../db.js");
-require("dotenv").config();
-const {
-  BYTES,
-  BASE,
-  ITERATIONS,
-  LONG_ENCRYPTION,
-  ENCRYPT_ALGORITHM,
-  EMAIL_USER,
-  PASSWORD_USER,
-} = process.env;
-const crypto = require("crypto");
-const nodemailer = require("nodemailer");
+import { Student, Teacher, Admin } from "../../../db.js";
+import { generateHashedPassword } from "../../../utils/PasswordHashing.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
-const sendConfirmationEmail = async (email, name) => {
+/* const sendConfirmationEmail = async (email, name) => {
   let Transport = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
@@ -33,9 +23,9 @@ const sendConfirmationEmail = async (email, name) => {
   });
 
   Transport.close();
-};
+}; */
 
-const postUser = async (req, res) => {
+const postUser = async (req, res, next) => {
   let { name, lastName, email, password, role, avatar } = req.body; //recibimos por body
   try {
     let user; //creamos una variable para guardar el usuario
@@ -43,97 +33,70 @@ const postUser = async (req, res) => {
       //Asignamos avatar por defecto en caso de no venir
       avatar =
         "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200";
-    //vamos a utilizar la libería cryto de node para encriptar la contraseña
-    crypto.randomBytes(parseInt(BYTES), (error, salt) => {
-      //recibimos una base numérica en bytes una función callback
-      //salt ===> es un string generado aleatoriamente que utilizamos para encriptar la contraseña, se guarda en base de datos
-      const newSalt = salt.toString(BASE); //generamos un nuevo salt
-      crypto.pbkdf2(
-        password,
-        newSalt,
-        parseInt(ITERATIONS), //iteraciones para encriptar
-        parseInt(LONG_ENCRYPTION), //longitud de la contraseña encriptada
-        ENCRYPT_ALGORITHM, //algoritmo de encriptación
-        async (error, key) => {
-          //Verificamos si alguno e los email está ya en la base de datos
-          const verifyEmailStudent = await Student.findOne({
-            where: { email },
-          }); //buscamos el usuario en la tabla de estudiantes
-          if (verifyEmailStudent) {
-            return res
-              .status(404)
-              .send({ message: "El correo ya esta registrado" });
-          }
-          const verifyEmailTeacher = await Teacher.findOne({
-            where: { email },
-          }); //buscamos el usuario en la tabla de profesores
-          if (verifyEmailTeacher) {
-            return res
-              .status(404)
-              .send({ message: "El correo ya esta registrado" });
-          }
-          const verifyEmailAdmin = await Admin.findOne({ where: { email } }); //buscamos el usuario en la tabla de administradores
-          if (verifyEmailAdmin) {
-            return res
-              .status(404)
-              .send({ message: "El correo ya esta registrado" });
-          }
-          const encryptedPassword = key.toString(BASE); //encriptamos la contraseña
-          if (role === "alumno") {
-            const student = await Student.create({
-              name,
-              lastName,
-              email: email.trim().toLowerCase(),
-              password: encryptedPassword,
-              avatar,
-              salt: newSalt,
-              authorization: false,
-              role: "alumno",
-            });
-            user = student; //guardamos el usuario en la variable
-            //await sendConfirmationEmail(email, name);
-          } else if (role === "profesor") {
-            //si es profesor
-            const teacher = await Teacher.create({
-              name,
-              lastName,
-              email: email.trim().toLowerCase(),
-              password: encryptedPassword,
-              avatar,
-              salt: newSalt,
-              authorization: false,
-              role: "profesor",
-            });
-            user = teacher; //guardamos el usuario en la variable
-            //await sendConfirmationEmail(email, name);
-          } else if (role === "admin") {
-            //si es admin
-            const admin = await Admin.create({
-              name,
-              lastName,
-              email: email.trim().toLowerCase(),
-              password: encryptedPassword,
-              avatar,
-              salt: newSalt,
-              authorization: false,
-              role: "admin",
-            });
-            user = admin; //guardamos el usuario en la variable
-          } else {
-            res.status(404).send({ message: "El rol no es valido" });
-          }
-          res
-            .status(200)
-            .send({ message: "Usuario Registrado con Éxito", userId: user.id });
-        },
-      );
-    });
+
+    //Verificamos si alguno e los email está ya en la base de datos
+    const [existingStudent, existingTeacher, existingAdmin] = await Promise.all(
+      [
+        Student.findOne({ where: { email } }),
+        Teacher.findOne({ where: { email } }),
+        Admin.findOne({ where: { email } }),
+      ]
+    );
+    if (existingStudent || existingTeacher || existingAdmin) {
+      throw new HttpError(409, { message: "El correo ya esta registrado" });
+    }
+
+    const { newPassword, newSalt } = await generateHashedPassword(password);
+
+    if (role === "alumno") {
+      const student = await Student.create({
+        name,
+        lastName,
+        email: email.trim().toLowerCase(),
+        password: newPassword,
+        avatar,
+        salt: newSalt,
+        authorization: false,
+        role: "alumno",
+      });
+      user = student;
+      //await sendConfirmationEmail(email, name);
+    } else if (role === "profesor") {
+      //si es profesor
+      const teacher = await Teacher.create({
+        name,
+        lastName,
+        email: email.trim().toLowerCase(),
+        password: newPassword,
+        avatar,
+        salt: newSalt,
+        authorization: false,
+        role: "profesor",
+      });
+      user = teacher;
+      //await sendConfirmationEmail(email, name);
+    } else if (role === "admin") {
+      //si es admin
+      const admin = await Admin.create({
+        name,
+        lastName,
+        email: email.trim().toLowerCase(),
+        password: newPassword,
+        avatar,
+        salt: newSalt,
+        authorization: false,
+        role: "admin",
+      });
+      user = admin;
+    } else {
+      throw new HttpError(400, { message: "El rol no es valido" });
+    }
+    res
+      .status(200)
+      .json({ message: "Usuario Registrado con Éxito", userId: user.id });
   } catch (error) {
-    console.error(error);
-    res.status(404).send(error);
+    next(error);
   }
 };
 
-module.exports = {
-  postUser,
-};
+export default postUser;

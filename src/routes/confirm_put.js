@@ -1,114 +1,98 @@
-const express = require("express");
-const router = express();
-const { Student, Teacher } = require("../db");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-const crypto = require("crypto");
-require("dotenv").config();
-const {
-  BYTES,
-  BASE,
-  ITERATIONS,
-  LONG_ENCRYPTION,
-  ENCRYPT_ALGORITHM,
-  EMAIL_USER,
-  PASSWORD_USER,
-} = process.env;
-router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({ extended: true }));
+import express from "express";
+const router = express.Router();
+import { Student, Teacher } from "../db.js";
+import cors from "cors";
+import { json, urlencoded } from "express";
+import { generateHashedPassword } from "../utils/PasswordHashing.js";
+import { HttpError } from "../utils/HttpError.js";
+router.use(json());
+router.use(urlencoded({ extended: true }));
 router.use(cors());
 
-// router.put('/confirm', async (req, res) => {
-//   const { email } = req.body;
-//   try{
-//     const verifyEmailStudent = await Student.findOne({ where: { email } });
-//     if (verifyEmailStudent) {
-//       await Student.update({
-//         authorization: true
-//       },
-//         {
-//           where: {
-//             email
-//           }
-//         });
-//         res.send('Authorization=true!');
-//     }
-//     const verifyEmailTeacher = await Teacher.findOne({ where: { email } });
-//     if (verifyEmailTeacher) {
-//       await Teacher.update({
-//         authorization: true
-//       },
-//         {
-//           where: {
-//             email
-//           }
-//         });
-//         res.send('Authorization=true!');
-//     }
-//     else{
-//       res.send('Algo no funcionó bien');
-//     }
-//   }catch(error){
-//     res.sendStatus(500).send('No pudo confirmarse');
-//   }
-// });
+router.put("/confirm", async (req, res, next) => {
+  const { email } = req.body;
+  try {
+    const verifyEmailStudent = await Student.findOne({ where: { email } });
+    if (verifyEmailStudent) {
+      await Student.update(
+        {
+          authorization: true,
+        },
+        {
+          where: {
+            email,
+          },
+        }
+      );
+      return res.status(200).json({ authorization: true });
+    }
+    const verifyEmailTeacher = await Teacher.findOne({ where: { email } });
+    if (verifyEmailTeacher) {
+      await Teacher.update(
+        {
+          authorization: true,
+        },
+        {
+          where: {
+            email,
+          },
+        }
+      );
+      return res.status(200).json({ authorization: true });
+    } else {
+      return res.status(400).json({ message: "Algo no funcionó bien" });
+    }
+  } catch (error) {
+    next(error);
+  }
+});
 
-// router.post('/forgotpassword', async (req, res) => {
+router.post("/forgotpassword", async (req, res, next) => {
+  const { email, password } = req.body;
 
-//   const {email, password} = req.body;
-//   console.log(password, email);
-//   try {
-//     let verifyEmailStudent = await Student.findOne({ where: { email } });
-//     if(!verifyEmailStudent){
-//       return res.sendStatus(404).send('El correo no esta registrado');
-//     }
-//     if (verifyEmailStudent) {
-//       crypto.randomBytes(parseInt(BYTES), (error, salt) => {
-//         const newSalt = salt.toString(BASE);
-//         crypto.pbkdf2(
-//           password,
-//           newSalt,
-//           parseInt(ITERATIONS),
-//           parseInt(LONG_ENCRYPTION),
-//           ENCRYPT_ALGORITHM,
-//           async (error, key) => {
-//             const encryptedPassword = key.toString(BASE);
-//             await Student.update({
-//               password: encryptedPassword,
-//               salt: newSalt
-//             },
-//               {
-//                 where: {
-//                   email
-//                 }
-//               });
-//             res.send({message: "Contraseña cambiada"});
-//           });
-//       })
-//     } else {
-//       res.status(400).send("Email incorrecto")
-//     }
+  try {
+    const verifyEmailStudent = await Student.findOne({ where: { email } });
+    if (verifyEmailStudent) {
+      const { newPassword, newSalt } = await generateHashedPassword(password);
 
-//     let verifyEmailTeacher = await Teacher.findOne({ where: { email } });
-//     if (verifyEmailTeacher) {
-//       await Teacher.update({
-//         password
-//       },
-//       {
-//         where: {
-//           email
-//         }
-//       });
-//       res.send('Contraseña cambiada');
-//     } else {
-//       res.status(400).send("Email incorrecto")
-//     }
-//   }catch (error){
-//     res.sendStatus(500).send(error);
-//   }
-// });
+      await Student.update(
+        {
+          password: newPassword,
+          salt: newSalt,
+        },
+        {
+          where: {
+            email,
+          },
+        }
+      );
+      return res.status(200).json({ message: "Contraseña cambiada" });
+    }
 
-router.post("/register", async (req, res) => {
+    const verifyEmailTeacher = await Teacher.findOne({ where: { email } });
+    if (verifyEmailTeacher) {
+      const { newPassword, newSalt } = await generateHashedPassword(password);
+      await Teacher.update(
+        {
+          password: newPassword,
+          salt: newSalt,
+        },
+        {
+          where: {
+            email,
+          },
+        }
+      );
+      return res.status(200).json({ message: "Contraseña cambiada" });
+    }
+
+    throw new HttpError(400, "Email incorrecto");
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post("/register", async (req, res, next) => {
   let { name, lastName, email, password, salt } = req.body;
   try {
     const user = await Student.create({
@@ -118,18 +102,18 @@ router.post("/register", async (req, res) => {
       password,
       salt,
     });
-    res.json(user);
+    res.status(200).json(user);
   } catch (error) {
-    res.send(`ERROR ${error}`);
+    next(error);
   }
 });
-router.get("/student", async (req, res) => {
+router.get("/student", async (req, res, next) => {
   try {
     let student = await Student.findAll();
-    res.send(student);
+    res.status(200).json(student);
   } catch (error) {
-    res.sendStatus(500).send(error);
+    next(error);
   }
 });
 
-module.exports = router;
+export default router;

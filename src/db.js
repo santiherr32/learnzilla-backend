@@ -1,94 +1,75 @@
-require("dotenv").config();
-const { Sequelize } = require("sequelize");
-const fs = require("fs");
-const path = require("path");
-const { DB_URL, DB_NAME, DB_USER, DB_PASSWORD } = process.env;
-const { DataTypes } = require("sequelize");
-const pg = require("pg");
-const parse = require("pg-connection-string").parse;
+import "dotenv/config";
+import { Sequelize } from "sequelize";
+import { readdirSync } from "fs";
+import { basename as _basename, join } from "path";
+const { DB_URL } = process.env;
+import { DataTypes } from "sequelize";
+import pg from "pg";
+import { parse } from "pg-connection-string";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+import { createRequire } from "module";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const require = createRequire(import.meta.url);
 
 const config = parse(DB_URL);
 
-const sequelize =
+const commonSequelizeOptions = {
+  dialectModule: pg,
+  dialect: "postgres",
+  protocol: "postgres",
+  host: config.host,
+  port: config.port,
+  database: config.database,
+  username: config.user,
+  password: config.password,
+  pool: {
+    max: 3,
+    min: 1,
+    idle: 10000,
+    acquire: 30000, // The maximum time, in milliseconds, that pool will try to get connection before throwing error
+  },
+  dialectOptions: {
+    ssl: {
+      require: true,
+      // Ref.: https://github.com/brianc/node-postgres/issues/2009
+      rejectUnauthorized: false,
+    },
+    keepAlive: true,
+  },
+  ssl: true,
+  define: {
+    freezeTableName: true, // Respeta los nombres exactos de las tablas
+    underscored: false, // Usa camelCase en lugar de snake_case
+  },
+};
+
+const sequelize = new Sequelize(
   process.env.NODE_ENV === "production"
-    ? new Sequelize({
-        dialectModule: pg,
-        dialect: "postgres",
-        protocol: "postgres",
-        host: config.host,
-        port: config.port,
-        database: config.database,
-        username: config.user,
-        password: config.password,
-        pool: {
-          max: 3,
-          min: 1,
-          idle: 10000,
-          acquire: 30000, // The maximum time, in milliseconds, that pool will try to get connection before throwing error
-        },
-        dialectOptions: {
-          ssl: {
-            require: true,
-            // Ref.: https://github.com/brianc/node-postgres/issues/2009
-            rejectUnauthorized: false,
-          },
-          keepAlive: true,
-        },
-        ssl: true,
-        define: {
-          freezeTableName: true, // Respeta los nombres exactos de las tablas
-          underscored: false, // Usa camelCase en lugar de snake_case
-        },
-      })
-    : new Sequelize(
-        //`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}`,
-        // `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_USER}`,
-        {
-          dialectModule: pg,
-          dialect: "postgres",
-          protocol: "postgres",
-          host: config.host,
-          port: config.port,
-          database: config.database,
-          username: config.user,
-          password: config.password,
-          pool: {
-            max: 3,
-            min: 1,
-            idle: 10000,
-            acquire: 30000, // The maximum time, in milliseconds, that pool will try to get connection before throwing error
-          },
-          dialectOptions: {
-            ssl: {
-              require: true,
-              rejectUnauthorized: false,
-            },
-          },
-          ssl: true,
-          define: {
-            freezeTableName: true, // Respeta los nombres exactos de las tablas
-            underscored: false, // Usa camelCase en lugar de snake_case
-          },
-          logging: (msg) => console.log(msg), // set to console.log to see the raw SQL queries
-          native: false, // lets Sequelize know we can use pg-native for ~30% more speed
-        }
-      );
-const basename = path.basename(__filename);
+    ? commonSequelizeOptions
+    : {
+      ...commonSequelizeOptions,
+      native: false, // lets Sequelize know we can use pg-native for ~30% more speed
+    }
+);
+const basename = _basename(__filename);
 
 const modelDefiners = [];
 
 // Leemos todos los archivos de la carpeta Models, los requerimos y agregamos al arreglo modelDefiners
-fs.readdirSync(path.join(__dirname, "/models"))
+readdirSync(join(__dirname, "/models"))
   .filter(
     (file) =>
       file.indexOf(".") !== 0 && file !== basename && file.slice(-3) === ".js"
   )
   .forEach((file) => {
-    modelDefiners.push(require(path.join(__dirname, "/models", file)));
+    modelDefiners.push(require(join(__dirname, "/models", file)));
   });
 
 // Injectamos la conexion (sequelize) a todos los modelos
-modelDefiners.forEach((model) => model(sequelize));
+modelDefiners.forEach((model) => (model.default || model)(sequelize));
 // Capitalizamos los nombres de los modelos ie: product => Product
 let entries = Object.entries(sequelize.models);
 let capsEntries = entries.map((entry) => [
@@ -99,18 +80,18 @@ sequelize.models = Object.fromEntries(capsEntries);
 
 // En sequelize.models están todos los modelos importados como propiedades
 // Para relacionarlos hacemos un destructuring
-const {
+export const {
   Category,
   Course,
   Student,
   Teacher,
   Video,
   Review,
-  Records,
   Admin,
   Order,
   Cv,
   Datamaker,
+  Records
 } = sequelize.models;
 
 // Aca vendrian las relaciones
@@ -194,20 +175,4 @@ Review.belongsTo(Course, { foreignKey: "FKcourseID" });
 // });
 // Order.belongsTo(Student);
 
-// Test the connection with detailed error logging
-(async () => {
-  try {
-    await sequelize.authenticate();
-    console.log("Connection has been established successfully.");
-  } catch (error) {
-    console.error("Unable to connect to the database:", error);
-    if (error.original) {
-      console.error("Original error:", error.original);
-    }
-  }
-})();
-
-module.exports = {
-  ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
-  conn: sequelize, // para importart la conexión { conn } = require('./db.js');
-};
+export const conn = sequelize; // para importart la conexión

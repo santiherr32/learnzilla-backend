@@ -1,6 +1,7 @@
-const { Video } = require("../../../db");
+import { Video } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
-const updateVideo = async (req, res) => {
+const updateVideo = async (req, res, next) => {
   const { id } = req.params;
   const { title, description, url, img } = req.body;
 
@@ -10,7 +11,7 @@ const updateVideo = async (req, res) => {
       attributes: ["title", "description", "url", "img"],
     });
     if (!video) {
-      return res.status(404).send({ message: "El video no existe" });
+      throw new HttpError(404, { message: "El video no existe" });
     }
     await Video.update(
       {
@@ -23,13 +24,10 @@ const updateVideo = async (req, res) => {
     );
     res
       .status(200)
-      .send({ message: "El video se ha actualizado correctamente" });
+      .json({ message: "El video se ha actualizado correctamente" });
   } catch (error) {
-    console.error(error);
-    res.status(404).send(error);
+    next(error);
   }
 };
 
-module.exports = {
-  updateVideo,
-};
+export { updateVideo, };

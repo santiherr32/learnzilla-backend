@@ -1,6 +1,7 @@
-const { Course } = require("../../../db.js");
+import { Course } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
-const deleteCourse = async (req, res) => {
+const deleteCourse = async (req, res, next) => {
   const { id } = req.params;
   try {
     const course = await Course.findOne({
@@ -10,7 +11,7 @@ const deleteCourse = async (req, res) => {
       attributes: ["name", "description", "price", "img", "FKteacherID"],
     });
     if (!course) {
-      return res.status(404).send({ message: "Curso no encontrado" });
+      throw new HttpError(404, { message: "Curso no encontrado" });
     }
     await Course.destroy({
       where: {
@@ -19,13 +20,10 @@ const deleteCourse = async (req, res) => {
     });
     res
       .status(200)
-      .send({ message: "Curso eliminado con Éxito", course: course });
+      .json({ message: "Curso eliminado con Éxito", course: course });
   } catch (error) {
-    console.log(error);
-    res.status(404).send(error);
+    next(error);
   }
 };
 
-module.exports = {
-  deleteCourse,
-};
+export { deleteCourse, };

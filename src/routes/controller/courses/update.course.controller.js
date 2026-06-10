@@ -1,7 +1,6 @@
-const { Course, Category } = require("../../../db");
-const { getInfoCourse } = require("./getInfoCourse");
-const { getCategoryId } = require("../getCategoryId");
-const updateCourse = async (req, res) => {
+import { Course, Category } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
+const updateCourse = async (req, res, next) => {
   const { id } = req.params;
   const { name, description, price, img } = req.body;
 
@@ -14,7 +13,7 @@ const updateCourse = async (req, res) => {
     });
 
     if (!course) {
-      return res.status(404).send({ message: "Curso no encontrado" }); //si no se encuentra el curso
+      throw new HttpError(404, { message: "Curso no encontrado" }); //si no se encuentra el curso
     }
 
     await Course.update(
@@ -27,13 +26,10 @@ const updateCourse = async (req, res) => {
       },
       { where: { id: id } }
     );
-    res.status(200).send({ message: "Curso actualizado" });
+    res.status(200).json({ message: "Curso actualizado" });
   } catch (error) {
-    console.log(error);
-    res.status(404).send(error);
+    next(error);
   }
 };
 
-module.exports = {
-  updateCourse,
-};
+export { updateCourse, };

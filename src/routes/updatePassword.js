@@ -1,11 +1,8 @@
-const { Router } = require("express");
-const { route } = require("./confirm_put");
-const router = Router();
+import { Router } from "express";
+import { updatePassword } from "./controller/updatePassword/update.password.controller.js";
 
-const {
-  updatePassword,
-} = require("./controller/updatePassword/update.password.controller");
+const router = Router();
 
 router.put("/update", updatePassword);
 
-module.exports = router;
+export default router;

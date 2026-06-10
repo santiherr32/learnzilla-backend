@@ -1,6 +1,7 @@
-const { Teacher } = require("../../../db.js");
+import { Teacher } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
-const updateTeacher = async (req, res) => {
+const updateTeacher = async (req, res, next) => {
   const { id } = req.params;
   const { name, lastName, email, avatar } = req.body;
   try {
@@ -12,7 +13,7 @@ const updateTeacher = async (req, res) => {
       attributes: ["name", "lastName", "email", "avatar"], //sacamos solo los atributos a comparar
     });
     if (!teacher) {
-      return res.status(404).send({ message: "Profesor no encontrado" });
+      throw new HttpError(404, { message: "Profesor no encontrado" });
     }
     await Teacher.update(
       //actualizamos el estudiante, solo si el atributo que se quiere actualizar no esta vacio
@@ -28,13 +29,10 @@ const updateTeacher = async (req, res) => {
         },
       }
     );
-    res.status(200).send({ message: "Profesor Actualizado" });
+    res.status(200).json({ message: "Profesor Actualizado" });
   } catch (error) {
-    console.error(error);
-    res.status(404).send({ message: "Error al actualizar el profesor" });
+    next(error);
   }
 };
 
-module.exports = {
-  updateTeacher,
-};
+export { updateTeacher, };

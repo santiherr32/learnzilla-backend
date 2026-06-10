@@ -1,33 +1,30 @@
-const { Student, Course } = require("../../../db.js");
-const { getInfoStudent } = require("./getInfoStudent.js");
-const { getAllStudents } = require("./getAllStudents.js");
+import getInfoStudent from "./getInfoStudent.js";
+import { getAllStudents } from "./getAllStudents.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
-const getStudents = async (req, res) => {
+const getStudents = async (req, res, next) => {
   try {
     let students = await getAllStudents();
     res.status(200).json(students);
   } catch (err) {
-    console.error(err);
-    res.status(404).send({ message: "Error al obtener los estudiantes" });
+    next(err);
   }
 };
 
-const getStudent = async (req, res) => {
+const getStudent = async (req, res, next) => {
   const { id } = req.params;
   try {
-    console.log(id);
     let student = await getInfoStudent(id);
     if (!student) {
-      return res.status(404).send({ message: "Estudiante no encontrado" });
+      throw new HttpError(404, { message: "Estudiante no encontrado" });
     }
     res.status(200).json(student);
   } catch (err) {
-    console.error(err);
-    res.status(404).send({ message: "Error al obtener el estudiante" });
+    next(err);
   }
 };
 
-module.exports = {
+export {
   getStudents,
   getStudent,
 };

@@ -1,9 +1,10 @@
-const { Review } = require("../../../db.js");
-const { Op } = require("sequelize");
+import { Review } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
+import { Op } from "sequelize";
 
-const getStudentReview = async (req, res) => {
+const getStudentReview = async (req, res, next) => {
   const { studentId, courseId } = req.query;
-  console.log({ studentId, courseId });
+
   try {
     const review = await Review.findOne({
       where: {
@@ -11,27 +12,27 @@ const getStudentReview = async (req, res) => {
       },
     });
     if (!review) {
-      return res.status(404).send({ flag: false });
+      throw new HttpError(404, { flag: false });
     }
-    res.status(200).send({ flag: true });
+    res.status(200).json({ flag: true });
   } catch (error) {
-    req.status(404).send(error);
+    next(error);
   }
 };
 
-const getReview = async (req, res) => {
+const getReview = async (req, res, next) => {
   try {
     const review = await Review.findAll();
-    if (!review) {
-      res.status(404).send({ message: "Aún no hay reviews" });
+    if (review.length === 0) {
+      throw new HttpError(404, { message: "Aún no hay reviews" });
     }
-    res.status(200).send(review);
+    res.status(200).json(review);
   } catch (error) {
-    res.status(404).send(error);
+    next(error);
   }
 };
 
-const getReviewById = async (req, res) => {
+const getReviewById = async (req, res, next) => {
   const { id } = req.params;
   try {
     const review = await Review.findAll({
@@ -39,17 +40,15 @@ const getReviewById = async (req, res) => {
         FKcourseID: id,
       },
     });
-    if (!review.length) {
-      return res.status(404).send({ message: "El curso aún no tiene reviews" });
+    if (review.length === 0) {
+      throw new HttpError(404, { message: "El curso aún no tiene reviews" });
     }
-    res.status(200).send(review);
+    res.status(200).json(review);
   } catch (error) {
-    res.status(404).send(error);
+    next(error);
   }
 };
 
-module.exports = {
-  getReview,
+export { getReview,
   getReviewById,
-  getStudentReview,
-};
+  getStudentReview, };

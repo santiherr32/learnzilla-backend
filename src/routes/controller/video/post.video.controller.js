@@ -1,6 +1,7 @@
-const { Course, Video } = require("../../../db");
+import { Course, Video } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
-const postVideo = async (req, res) => {
+const postVideo = async (req, res, next) => {
   let { title, description, url, cursoId, img } = req.body;
   if (Array.isArray(cursoId)) {
     cursoId = cursoId[0];
@@ -8,7 +9,7 @@ const postVideo = async (req, res) => {
   try {
     const FK = await Course.findByPk(cursoId);
     if (!FK) {
-      return res.status(404).send({ message: "El curso es inválido" });
+      throw new HttpError(404, { message: "El curso es inválido" });
     }
 
     if (!img) img = "https://placeimg.com/240/120/tech";
@@ -20,16 +21,15 @@ const postVideo = async (req, res) => {
       img,
     });
     // console.log('llegue  a video create',FK);
-    res.status(200).send({
+    res.status(200).json({
       message: "El video se ha creado correctamente",
       videoId: video.id,
     });
   } catch (error) {
-    console.error(error);
-    res.status(404).send(error);
+    next(error);
   }
 };
 
-module.exports = {
+export {
   postVideo,
 };

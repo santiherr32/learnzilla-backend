@@ -1,16 +1,16 @@
-const { Order } = require("../../../db");
+import { Order } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
-const getOrders = async (req, res) => {
+const getOrders = async (req, res, next) => {
   try {
     const orders = await Order.findAll({});
-    res.status(200).send(orders);
+    res.status(200).json(orders);
   } catch (error) {
-    console.log(error);
-    res.status(404).send(error);
+    next(error);
   }
 };
 
-const getOrder = async (req, res) => {
+const getOrder = async (req, res, next) => {
   const { id } = req.params;
   try {
     const order = await Order.findOne({
@@ -19,16 +19,13 @@ const getOrder = async (req, res) => {
       },
     });
     if (!order) {
-      res.status(404).send({ message: "No se encontro el pedido" });
+      throw new HttpError(404, { message: "No se encontro el pedido" });
     }
-    res.status(200).send(order);
+    res.status(200).json(order);
   } catch (error) {
-    console.log(error);
-    res.status(404).send(error);
+    next(error);
   }
 };
 
-module.exports = {
-  getOrders,
-  getOrder,
-};
+export { getOrders,
+  getOrder, };

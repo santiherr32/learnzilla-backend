@@ -1,19 +1,20 @@
-const express = require("express");
-const cookieParser = require("cookie-parser");
-const bodyParser = require("body-parser");
-const morgan = require("morgan");
-const routes = require("./routes/index.js");
+import express, { urlencoded, json } from "express";
+import cookieParser from "cookie-parser";
+import morgan from "morgan";
+import helmet from "helmet";
+import routes from "./routes/index.js";
 
-require("./db.js");
+import "./db.js";
 
 const server = express();
-const cors = require("cors");
+server.use(helmet());
 
-server.name = "API";
+import cors from "cors";
+
 
 server.use(cors());
-server.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
-server.use(bodyParser.json({ limit: "50mb" }));
+server.use(urlencoded({ extended: true, limit: "50mb" }));
+server.use(json({ limit: "50mb" }));
 server.use(cookieParser());
 server.use(morgan("dev"));
 server.use((req, res, next) => {
@@ -34,12 +35,11 @@ server.use((req, res, next) => {
 server.use("/", routes); //me traigo las rutas de quefiní para usarlas y generar mi enrutado
 
 // Error catching endware.
-server.use((err, req, res, next) => {
-  // eslint-disable-line no-unused-vars
+server.use((err, req, res, _next) => {
   const status = err.status || 500;
-  const message = err.message || err;
+  const response = err.body || { message: err.message || "Error interno del servidor" };
   console.error(err);
-  res.status(status).send(message);
+  res.status(status).json(response);
 });
 
-module.exports = server;
+export default server;

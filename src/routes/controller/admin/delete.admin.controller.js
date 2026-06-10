@@ -1,6 +1,7 @@
-const { Admin } = require("../../../db.js");
+import { Admin } from "../../../db.js";
+import { HttpError } from "../../../utils/HttpError.js";
 
-const deteteAdmin = async (req, res) => {
+const deteteAdmin = async (req, res, next) => {
   const { id } = req.params;
   try {
     const admin = await Admin.findOne({
@@ -11,7 +12,7 @@ const deteteAdmin = async (req, res) => {
       attributes: ["name", "lastName", "email", "avatar"], //vamos a mandar solo los atributos que nos interesan
     });
     if (!admin) {
-      return res.status(404).send({ message: "Administrador no encontrado" });
+      throw new HttpError(404, { message: "Administrador no encontrado" });
     }
     await Admin.destroy({
       //eliminamos el administrador
@@ -19,13 +20,10 @@ const deteteAdmin = async (req, res) => {
         id: id,
       },
     });
-    res.status(200).send({ message: "Administrador Eliminado", admin }); //enviamos el estudiante eliminado
+    res.status(200).json({ message: "Administrador Eliminado", admin }); //enviamos el administrador eliminado
   } catch (error) {
-    console.error(error);
-    res.status(404).send({ message: "Error al eliminar el administrador" });
+    next(error);
   }
 };
 
-module.exports = {
-  deteteAdmin,
-};
+export { deteteAdmin, };

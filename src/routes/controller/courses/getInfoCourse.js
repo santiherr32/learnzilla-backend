@@ -1,9 +1,8 @@
 //Función para obtener la infomación de un curso
-const { Category, Course, Review, Teacher, conn } = require("../../../db.js");
+import { Category, Course, Review, Teacher, conn } from "../../../db.js";
 
 const getInfoCourse = async (name) => {
-  try {
-    const course = await Course.findOne({
+  const course = await Course.findOne({
       where: { name },
       attributes: [
         "id",
@@ -59,13 +58,7 @@ const getInfoCourse = async (name) => {
       teacherName: `${course.Teacher.name} ${course.Teacher.lastName}`,
       categories: course.Categories.map((cat) => cat.name),
       meanReview: course.dataValues.meanReview || 0,
-    };
-  } catch (err) {
-    console.error("Error en getInfoCourse:", err.message);
-    throw new Error("Error al obtener información del curso");
-  }
+  };
 };
 
-module.exports = {
-  getInfoCourse,
-};
+export { getInfoCourse, };
