@@ -45,7 +45,7 @@ router.post("/", async (req, res, next) => {
       return res.status(200).json({ authorization: true, role, id: DbUser.id });
     }
 
-    throw new HttpError(401, { authorization: false });
+    throw new HttpError(401, { authorization: false, message: "contraseña incorrecta" });
   } catch (error) {
     next(error);
   }
